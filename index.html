@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Mesa</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap");
+:root{--bg:#fff1c9;--fg:#141414;--card:#fff;--ink:#141414;--sh:#141414;--y:#ffd500;--r:#e8202a;--b:#1b5fd6;--dot:rgba(0,0,0,.13);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#ffd500;--dot:rgba(255,255,255,.07)}}
+:root[data-theme="dark"]{--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#ffd500;--dot:rgba(255,255,255,.07)}
+:root[data-theme="light"]{--bg:#fff1c9;--fg:#141414;--card:#fff;--ink:#141414;--sh:#141414;--dot:rgba(0,0,0,.13)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;color:var(--fg);background:var(--bg) radial-gradient(circle,var(--dot) 1.4px,transparent 1.8px) 0 0/11px 11px;font:17px/1.55 "Comic Neue","Comic Sans MS",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--y);z-index:10}
+a{color:inherit}h1,h2,h3,.bn,summary{font-family:Bangers,Impact,"Arial Narrow",sans-serif;font-weight:400;letter-spacing:.04em}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--y);color:#141414;border-bottom:4px solid var(--ink);flex-wrap:wrap}
+.top .sp{flex:1}.crumbs{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button{font:700 14px "Comic Neue",sans-serif;color:#141414;background:#fff;border:3px solid var(--ink);border-radius:4px;padding:3px 10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+button:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}button:disabled{opacity:.45;cursor:default}
+#mb{display:none}.wrap{display:flex}
+aside{width:270px;flex:none;padding:16px 12px;height:calc(100vh - 56px);overflow:auto;position:sticky;top:56px}
+aside ul{list-style:none;margin:0;padding-left:12px}aside>ul{padding-left:0}
+aside a{display:block;margin:4px 0;padding:3px 10px;border:3px solid var(--ink);background:var(--card);text-decoration:none;font-weight:700;box-shadow:3px 3px 0 var(--sh)}
+aside a.on{background:var(--r);color:#fff;transform:rotate(-1.5deg)}
+main{flex:1;min-width:0;padding-bottom:80px}
+.cover{height:150px;border-bottom:5px solid var(--ink);position:relative}
+.cover::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.28) 1.6px,transparent 2px) 0 0/9px 9px}
+.pg{max-width:780px;margin:0 auto;padding:0 20px}
+.ico{font-size:60px;line-height:1;margin-top:-34px;position:relative;z-index:2}
+h1{display:inline-block;position:relative;font-size:46px;line-height:1.1;margin:-28px 0 22px;padding:2px 18px;background:var(--y);color:#141414;border:4px solid var(--ink);box-shadow:6px 6px 0 var(--r);transform:skew(-3deg)}
+h2{font-size:30px;color:var(--r);margin:26px 0 4px;text-shadow:2px 2px 0 var(--ink)}h3{font-size:24px;color:var(--b);margin:20px 0 4px}
+.box{background:var(--card);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--sh);padding:6px 18px 14px;margin:6px 0 10px}
+p{margin:7px 0}
+details{margin:10px 0;border:3px solid var(--ink);background:var(--card);box-shadow:4px 4px 0 var(--sh)}
+summary{cursor:pointer;font-size:22px;padding:2px 12px;background:var(--b);color:#fff}details>div{padding:4px 14px 8px}
+.subs{margin-top:30px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.subs a{text-decoration:none;font-weight:700;padding:12px;border:4px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--sh)}.subs a:hover{background:var(--y);color:#141414}
+input,textarea,select{font:inherit;color:#141414;background:#fff;border:3px solid var(--ink);padding:5px 9px;width:100%}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+input.ti{font:400 34px Bangers,Impact,sans-serif}input.ic{width:96px;font-size:34px;margin-top:-34px;position:relative}
+.top input,.top select{width:190px;padding:2px 8px;font-size:14px}input[type=color]{width:46px;height:32px;padding:2px}
+.row{display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap}.row label{display:flex;gap:8px;align-items:center;font-weight:700}
+.hint{font-size:13px;opacity:.75}.log{border-left:6px solid var(--r);padding:4px 12px;margin:12px 0;background:var(--card)}
+@media(max-width:800px){#mb{display:inline-block}aside{position:fixed;left:0;top:calc(56px + env(safe-area-inset-top,0px));bottom:0;height:auto;z-index:6;background:var(--bg);border-right:4px solid var(--ink);transform:translateX(-100%);transition:transform .2s}aside.open{transform:none}h1{font-size:34px}}
+</style></head><body><div id="root"><p style="padding:20px">Carregando…</p></div>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword,updatePassword,reauthenticateWithCredential,EmailAuthProvider} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,query,where} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import {firebaseConfig} from './config.js';
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),root=document.getElementById('root');
+const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false;
+const mail=u=>u.toLowerCase().replace(/[^a-z0-9._-]/g,'')+'@mesa.local',V=id=>document.getElementById(id).value,pg=id=>S.pages.find(x=>x.id===id),isMod=()=>me&&me.role==='mod';
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function grad(c){var a=(c||'#333,#555').split(',');return 'linear-gradient(135deg,'+a[0]+','+(a[1]||a[0])+')'}
+function inl(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\[\[(.+?)\]\]/g,function(m,t){var p=S.pages.filter(function(x){return esc(x.t).toLowerCase()===t.toLowerCase()})[0];return p?'<a href="#'+p.id+'">'+esc(p.t)+'</a>':t})}
+function md(b){var o='',ul=false,d=0,m;function cl(){if(ul){o+='</ul>';ul=false}}
+b.split('\n').forEach(function(ln){
+if(m=ln.match(/^\+ (.+)/)){cl();o+='<details><summary>'+inl(m[1])+'</summary><div>';d++}
+else if(ln.trim()==='+/'){cl();if(d){o+='</div></details>';d--}}
+else if(m=ln.match(/^(#{1,2}) (.+)/)){cl();var n=m[1].length+1;o+='<h'+n+'>'+inl(m[2])+'</h'+n+'>'}
+else if(m=ln.match(/^!\[\]\((imgs\/[\w.-]+|https:\/\/[^\s"<>)]+)\)$/)){cl();o+='<img src="'+m[1]+'" alt="" style="max-width:100%;border:3px solid var(--ink)">'}
+else if(m=ln.match(/^- (.+)/)){if(!ul){o+='<ul>';ul=true}o+='<li>'+inl(m[1])+'</li>'}
+else{cl();if(ln.trim())o+='<p>'+inl(ln)+'</p>'}});
+cl();while(d--)o+='</div></details>';return o}
+
+function tree(pid){const k=S.pages.filter(x=>(x.p||'')===pid);return k.length?'<ul>'+k.map(x=>'<li><a href="#'+x.id+'" class="'+(x.id===cur?'on':'')+'">'+esc(x.t)+'</a>'+tree(x.id)+'</li>').join('')+'</ul>':''}
+async function load(){const c=collection(db,'pages'),qs=[];
+if(isMod())qs.push(getDocs(c));else{qs.push(getDocs(query(c,where('vis','==','public'))));if(me){qs.push(getDocs(query(c,where('vis','==','players'))));qs.push(getDocs(query(c,where('allow','array-contains',me.uid))))}}
+const m={};(await Promise.all(qs)).forEach(s=>s.forEach(d=>m[d.id]={id:d.id,...d.data()}));S.pages=Object.values(m).sort((a,b)=>(a.o||0)-(b.o||0))}
+async function loadMe(u){me=null;prof={};if(!u)return;const a=await getDoc(doc(db,'accounts',u.uid));if(!a.exists()){await signOut(auth);return}
+me={uid:u.uid,...a.data()};const p=await getDoc(doc(db,'players',me.username));prof=p.exists()?p.data():{};
+if(isMod())acc=(await getDocs(collection(db,'accounts'))).docs.map(d=>({id:d.id,...d.data()}))}
+onAuthStateChanged(auth,async u=>{try{await loadMe(u)}catch(e){me=null}try{await load()}catch(e){S.pages=[]}
+if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#ffd500'});await load()}render()});
+const say=t=>{msg=t;render()};
+function loginV(){return '<h1>Entrar</h1><div class="row"><input id="ln" placeholder="Nome de usuário" autocapitalize="none"><input id="lp" type="password" placeholder="Senha"></div><div class="row"><button data-act="login">Entrar</button></div>'}
+function contaV(){const T=isMod()?[['jog','Jogadores'],['cfg','Perfil'],['git','Imagens']]:[['meu','Anotações'],['cfg','Perfil']];if(!T.some(t=>t[0]===tab))tab=T[0][0];
+let h='<h1>'+esc(prof.display||me.username)+'</h1><div class="row">'+T.map(t=>'<button data-act="tab" data-t="'+t[0]+'"'+(tab===t[0]?' disabled':'')+'>'+t[1]+'</button>').join('')+'<button data-act="logout">Sair</button></div>';
+if(tab==='meu')return h+'<div class="box"><textarea id="nt" rows="12">'+esc(prof.notes||'')+'</textarea><div class="row"><button data-act="savenote">Salvar anotações</button></div></div>';
+if(tab==='cfg')return h+'<div class="box"><h3>Nome de exibição</h3><div class="row"><input id="dn" value="'+esc(prof.display||'')+'" placeholder="'+esc(me.username)+'"><button data-act="savedn">Salvar</button></div><h3>Trocar senha</h3><div class="row"><input id="cp" type="password" placeholder="Senha atual"><input id="np2" type="password" placeholder="Nova senha (mín. 6)"><button data-act="chpw">Trocar</button></div></div>';
+if(tab==='git'){const g=JSON.parse(localStorage.getItem('gh')||'{}');return h+'<div class="box"><p class="hint">Para enviar imagens ao GitHub. Fica guardado só neste aparelho. Use um token com acesso apenas a este repositório (permissão Contents: leitura e escrita).</p><div class="row"><input id="gr" placeholder="usuario/repositorio" value="'+esc(g.repo||'')+'"><input id="gb" placeholder="branch (main)" value="'+esc(g.branch||'')+'"></div><div class="row"><input id="gt" type="password" placeholder="Token" value="'+esc(g.token||'')+'"><button data-act="savegh">Salvar</button></div></div>'}
+h+='<p class="hint">Esqueceu a senha de um jogador? Apague o usuário em Authentication no console do Firebase e crie de novo aqui. As anotações ficam, mas páginas restritas precisam ser liberadas outra vez.</p>';
+h+=acc.map(a=>'<div class="box"><b>'+esc(a.username)+'</b> <span class="hint">'+esc(a.role)+'</span></div>').join('');
+return h+'<div class="box"><h3>Novo jogador</h3><div class="row"><input id="nu" placeholder="Nome de usuário" autocapitalize="none"><input id="npw" type="password" placeholder="Senha (mín. 6)"><button data-act="mk">Criar</button></div></div>'}
+function pageV(p){const kids=S.pages.filter(x=>x.p===p.id),d=edit&&D&&D.id===p.id?D:null,cc=((d||p).c||'#333,#555').split(',');
+let h='<div class="cover" style="background:'+grad((d||p).c)+'"></div><div class="pg">';
+if(d){const al=(d.allow||[]).map(u=>(acc.find(a=>a.id===u)||{}).username||u).join(', ');
+h+='<input class="ti" data-f="t" value="'+esc(d.t)+'"><div class="row"><label>Quem vê <select data-f="vis"><option value="public"'+(d.vis==='public'?' selected':'')+'>Todos</option><option value="players"'+(d.vis==='players'?' selected':'')+'>Jogadores logados</option><option value="restrict"'+(d.vis==='restrict'?' selected':'')+'>Só os listados</option></select></label><input data-f="allow" value="'+esc(al)+'" placeholder="usuários liberados, separados por vírgula"></div>';
+h+='<div class="row"><label>Capa <input type="color" data-f="c1" value="'+cc[0]+'"><input type="color" data-f="c2" value="'+(cc[1]||cc[0])+'"></label><label>Imagem <input type="file" id="img" accept="image/*" style="width:auto"></label></div>';
+h+='<textarea data-f="b" rows="16">'+esc(d.b||'')+'</textarea><p class="hint"># título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" bloco recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button>'+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
+else h+='<h1>'+esc(p.t)+'</h1><div class="box">'+md(p.b||'')+'</div>';
+if(kids.length)h+='<div class="subs">'+kids.map(x=>'<a href="#'+x.id+'">'+esc(x.t)+'</a>').join('')+'</div>';
+return h+'</div>'}
+function render(){if(cur==='conta'&&!me)cur='entrar';if(cur==='entrar'&&me)cur='conta';
+const sp=cur==='entrar'||cur==='conta';let p=pg(cur);if(!sp&&!p){cur='home';p=pg('home')}
+let h='<div class="top"><button id="mb" data-act="menu">Menu</button><span class="crumbs bn">'+(sp?(cur==='conta'?'Conta':'Entrar'):esc(p?p.t:''))+'</span><span class="sp"></span><span class="hint">'+esc(msg)+'</span>';
+if(isMod()&&!sp&&p)h+='<button data-act="edit">'+(edit?'Ver como jogador':'Editar')+'</button>';
+h+='<button data-act="prof">'+(me?esc(prof.display||me.username):'Entrar')+'</button></div><div class="wrap"><aside id="sd" class="'+(side?'open':'')+'">'+tree('')+'</aside><main>';
+h+=sp?'<div class="cover" style="background:'+grad('#e8202a,#ffd500')+'"></div><div class="pg">'+(cur==='entrar'?loginV():contaV())+'</div>':(p?pageV(p):'<div class="pg"><p>Carregando…</p></div>');
+root.innerHTML=h+'</main></div>';document.title=(pg('home')||{t:'Mesa'}).t}
+function go(){cur=location.hash.slice(1)||'home';side=false;D=edit&&pg(cur)?structuredClone(pg(cur)):null;render();scrollTo(0,0)}
+addEventListener('hashchange',go);
+root.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f||!D)return;
+if(f==='c1'||f==='c2'){const a=(D.c||'#333,#555').split(',');a[f==='c1'?0:1]=e.target.value;D.c=a.join(',');root.querySelector('.cover').style.background=grad(D.c)}
+else if(f==='allow')D.allow=e.target.value.split(',').map(x=>x.trim().toLowerCase()).map(n=>(acc.find(a=>a.username===n)||{}).id).filter(Boolean);
+else D[f]=e.target.value});
+async function up(file){const g=JSON.parse(localStorage.getItem('gh')||'{}');if(!g.repo||!g.token)throw 0;const bm=await createImageBitmap(file),k=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement('canvas');cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext('2d').drawImage(bm,0,0,cv.width,cv.height);
+const name='imgs/'+Date.now().toString(36)+'.jpg',r=await fetch('https://api.github.com/repos/'+g.repo+'/contents/'+name,{method:'PUT',headers:{Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json'},body:JSON.stringify({message:'imagem '+name,content:cv.toDataURL('image/jpeg',.85).split(',')[1],branch:g.branch||'main'})});if(!r.ok)throw r.status;return name}
+root.addEventListener('change',async e=>{if(e.target.id!=='img'||!e.target.files[0]||!D)return;say('Enviando imagem…');
+try{const n=await up(e.target.files[0]);D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
+const drop=async id=>{for(const k of S.pages.filter(x=>x.p===id))await drop(k.id);await deleteDoc(doc(db,'pages',id))};
+root.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;
+try{
+if(k==='menu'){side=!side;document.getElementById('sd').classList.toggle('open',side)}
+else if(k==='prof')location.hash=me?'conta':'entrar';
+else if(k==='edit'){edit=!edit;D=edit?structuredClone(pg(cur)):null;render()}
+else if(k==='tab'){tab=a.dataset.t;render()}
+else if(k==='login'){try{await signInWithEmailAndPassword(auth,mail(V('ln')),V('lp'));location.hash='conta'}catch(x){say('Usuário ou senha incorretos')}}
+else if(k==='logout'){await signOut(auth);edit=false;location.hash='home'}
+else if(k==='save'){const {id,...r}=D;await setDoc(doc(db,'pages',id),r);await load();say('Salvo')}
+else if(k==='add'){const id='p'+Date.now().toString(36);await setDoc(doc(db,'pages',id),{t:'Nova página',b:'',p:cur,o:Date.now(),vis:'public',c:'#1b5fd6,#6dd5fa'});await load();location.hash=id}
+else if(k==='del'){if(!arm){arm=true;a.textContent='Confirmar exclusão?';return}arm=false;const par=pg(cur).p;await drop(cur);await load();location.hash=par||'home'}
+else if(k==='savenote'){prof={...prof,notes:V('nt')};await setDoc(doc(db,'players',me.username),prof);say('Salvo')}
+else if(k==='savedn'){prof={...prof,display:V('dn').trim()};await setDoc(doc(db,'players',me.username),prof);say('Salvo')}
+else if(k==='chpw'){const u=auth.currentUser;await reauthenticateWithCredential(u,EmailAuthProvider.credential(mail(me.username),V('cp')));await updatePassword(u,V('np2'));say('Senha trocada')}
+else if(k==='mk'){const n=V('nu').trim().toLowerCase().replace(/[^a-z0-9._-]/g,''),p=V('npw');if(!n||p.length<6){say('Informe nome e senha (mín. 6)');return}
+const sa=getAuth(initializeApp(firebaseConfig,'sec'+Date.now())),c=await createUserWithEmailAndPassword(sa,mail(n),p);await setDoc(doc(db,'accounts',c.user.uid),{username:n,role:'player'});await signOut(sa);await loadMe(auth.currentUser);say('Jogador criado')}
+else if(k==='savegh'){localStorage.setItem('gh',JSON.stringify({repo:V('gr').trim(),branch:V('gb').trim(),token:V('gt').trim()}));say('Salvo neste aparelho')}
+}catch(x){say('Não foi possível concluir a ação')}});
+go();
+</script></body></html>
