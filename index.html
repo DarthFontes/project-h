@@ -77,6 +77,14 @@ a.pn:hover,a.pn:focus{transform:scale(1.04) rotate(-1deg);outline:none}
 [data-st="flat"] .pn>b{-webkit-text-stroke:0;text-shadow:0 1px 6px rgba(0,0,0,.6);transform:none}
 [data-st="flat"] .cd:hover,[data-st="flat"] a.pn:hover{transform:none}[data-st="flat"] button{background:var(--card);color:var(--fg)}
 [data-st="flat"] .bb{border-width:1px;box-shadow:none;border-radius:20px}[data-st="flat"] .bb::after{display:none}
+
+.bk{border:3px solid var(--ink);background:var(--card);padding:8px 12px;margin:10px 0}.bkh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.bkh b{font-family:var(--hf);font-weight:400;font-size:20px}.bkh button{padding:0 9px;margin-left:4px}
+.bk input,.bk select,.bk textarea{margin:3px 0}
+.cal{border:4px solid var(--ink);border-left-width:12px;padding:4px 16px;margin:12px 0;background:var(--card)}.cv0{border-left-color:var(--b)}.cv1{border-left-color:var(--y)}.cv2{border-left-color:var(--r)}
+.cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin:10px 0}.fg{margin:14px 0}.fg img{max-width:100%;border:4px solid var(--ink);box-shadow:6px 6px 0 var(--sh)}.fg figcaption{font-size:14px;opacity:.8}
+hr{border:0;border-top:4px dashed var(--ink);margin:18px 0}
+aside a[draggable=true]{cursor:grab}aside a.dz-b{box-shadow:0 -4px 0 var(--r)}aside a.dz-a{box-shadow:0 4px 0 var(--r)}aside a.dz-i{outline:3px dashed var(--r)}
+[data-st="flat"] .cal{border-width:1px;border-left-width:5px;border-radius:4px}[data-st="flat"] .bk,[data-st="flat"] .fg img{border-width:1px;box-shadow:none}[data-st="flat"] hr{border-top:1px solid var(--ink)}
 </style></head><body><div id="root"><p style="padding:20px">Carregando…</p></div>
 <script>
 (function(){var r=document.getElementById('root');
@@ -88,7 +96,7 @@ setTimeout(function(){show('O script não terminou de carregar. Confira se o con
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword,updatePassword,reauthenticateWithCredential,EmailAuthProvider} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,query,where} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+import {getFirestore,collection,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,query,where} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import {firebaseConfig} from './config.js';
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),root=document.getElementById('root');
 const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false,dr=false;
@@ -106,7 +114,7 @@ else if(m=ln.match(/^- (.+)/)){if(!ul){o+='<ul>';ul=true}o+='<li>'+inl(m[1])+'</
 else{cl();if(ln.trim())o+='<p>'+inl(ln)+'</p>'}});
 cl();while(d--)o+='</div></details>';return o}
 
-function tree(pid){const k=S.pages.filter(x=>(x.p||'')===pid);return k.length?'<ul>'+k.map(x=>'<li><a href="#'+x.id+'" class="'+(x.id===cur?'on':'')+'">'+esc(x.t)+'</a>'+tree(x.id)+'</li>').join('')+'</ul>':''}
+function tree(pid){const k=S.pages.filter(x=>(x.p||'')===pid);return k.length?'<ul>'+k.map(x=>'<li><a href="#'+x.id+'"'+(isMod()&&x.id!=='home'?' draggable="true"':'')+' data-id="'+x.id+'" class="'+(x.id===cur?'on':'')+'">'+esc(x.t)+'</a>'+tree(x.id)+'</li>').join('')+'</ul>':''}
 async function load(){const c=collection(db,'pages'),qs=[];
 if(isMod())qs.push(getDocs(c));else{qs.push(getDocs(query(c,where('vis','==','public'))));if(me){qs.push(getDocs(query(c,where('vis','==','players'))));qs.push(getDocs(query(c,where('allow','array-contains',me.uid))))}}
 const m={};(await Promise.all(qs)).forEach(s=>s.forEach(d=>m[d.id]={id:d.id,...d.data()}));S.pages=Object.values(m).sort((a,b)=>(a.o||0)-(b.o||0))}
@@ -154,6 +162,27 @@ return '<div class="dw"><h3>Personalizar página</h3><label>Tema</label>'+sel('p
 +'<label class="row"><input type="checkbox" data-th="dots"'+(o.dots===false?'':' checked')+'> Pontilhado de fundo</label><label class="row"><input type="checkbox" data-th="nocover"'+(o.nocover?' checked':'')+'> Sem capa</label>'
 +'<label class="row"><input type="checkbox" data-th="inh"'+(o.inh?' checked':'')+'> Aplicar também às subpáginas (na página inicial, vale para o site todo)</label>'
 +'<div class="row"><button data-act="threset">Redefinir esta página</button></div><p class="hint">Cor de texto muito parecida com o fundo dos cartões pode ficar ilegível. Salve a página para valer para todos.</p></div>'}
+const BN={md:'Texto',h:'Título',img:'Imagem',call:'Destaque',tog:'Recolhível',cols:'Colunas',div:'Divisor'};
+const nb=t=>({md:{t,x:''},h:{t,x:'',l:'1'},img:{t,x:'',y:''},call:{t,x:'',v:'0'},tog:{t,x:'',y:''},cols:{t,c:['','']},div:{t}})[t];
+const cd=p=>{const d=structuredClone(p);if(!Array.isArray(d.bl))d.bl=d.b?[{t:'md',x:d.b}]:[];return d};
+function blV(p){return p.bl.map(b=>{const t=b.t;
+if(t==='md')return md(b.x||'');if(t==='h'){const n=b.l=='2'?3:2;return '<h'+n+'>'+inl(b.x||'')+'</h'+n+'>'}
+if(t==='img')return okimg(b.x)?'<figure class="fg"><img src="'+esc(b.x)+'" alt="">'+(b.y?'<figcaption>'+inl(b.y)+'</figcaption>':'')+'</figure>':'';
+if(t==='call')return '<div class="cal cv'+(b.v||0)+'">'+md(b.x||'')+'</div>';
+if(t==='tog')return '<details><summary>'+inl(b.x||'')+'</summary><div>'+md(b.y||'')+'</div></details>';
+if(t==='cols')return '<div class="cl">'+(b.c||[]).map(c=>'<div>'+md(c)+'</div>').join('')+'</div>';
+return t==='div'?'<hr>':''}).join('')}
+const bt=(i,f,v,r)=>'<textarea data-bi="'+i+'" data-bf="'+f+'" rows="'+r+'">'+esc(v||'')+'</textarea>',bx=(i,f,v,ph)=>'<input data-bi="'+i+'" data-bf="'+f+'" value="'+esc(v||'')+'" placeholder="'+ph+'">',bs=(i,f,v,o)=>'<select data-bi="'+i+'" data-bf="'+f+'">'+o.map(x=>'<option value="'+x[0]+'"'+(String(v)===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select>';
+function blEd(){return D.bl.map((b,i)=>{let f='';
+if(b.t==='md')f=bt(i,'x',b.x,5);else if(b.t==='h')f=bx(i,'x',b.x,'Título')+bs(i,'l',b.l||'1',[['1','Grande'],['2','Médio']]);
+else if(b.t==='img')f=bx(i,'x',b.x,'imgs/arquivo.jpg ou https://...')+'<input type="file" accept="image/*" data-up="'+i+'" style="width:auto">'+bx(i,'y',b.y,'Legenda (opcional)');
+else if(b.t==='call')f=bs(i,'v',b.v||'0',[['0','Azul'],['1','Amarelo'],['2','Vermelho'],['3','Neutro']])+bt(i,'x',b.x,3);
+else if(b.t==='tog')f=bx(i,'x',b.x,'Título do bloco')+bt(i,'y',b.y,4);
+else if(b.t==='cols')f='<div class="cl">'+(b.c||[]).map((c,j)=>'<textarea data-bi="'+i+'" data-ci="'+j+'" rows="5">'+esc(c)+'</textarea>').join('')+'</div><button data-act="bcol" data-i="'+i+'" data-d="1">+ coluna</button> <button data-act="bcol" data-i="'+i+'" data-d="-1">- coluna</button>';
+return '<div class="bk"><div class="bkh"><b>'+BN[b.t]+'</b><span><button data-act="bmv" data-i="'+i+'" data-d="-1">▲</button><button data-act="bmv" data-i="'+i+'" data-d="1">▼</button><button data-act="bdel" data-i="'+i+'">×</button></span></div>'+f+'</div>'}).join('')+'<div class="row">'+Object.keys(BN).map(t=>'<button data-act="badd" data-t="'+t+'">+ '+BN[t]+'</button>').join('')+'</div>'}
+const sibs=par=>S.pages.filter(x=>(x.p||'')===par).sort((a,b)=>(a.o||0)-(b.o||0)),isDesc=(t,id)=>{for(let n=pg(t);n;n=pg(n.p))if(n.id===id)return true;return false};
+async function place(id,par,idx){const l=sibs(par).filter(x=>x.id!==id);l.splice(idx,0,pg(id));
+await Promise.all(l.map((x,i)=>(x.id===id||(x.o||0)!==(i+1)*10)?setDoc(doc(db,'pages',x.id),{p:par,o:(i+1)*10},{merge:true}):null).filter(Boolean))}
 function homeV(p){const T=id=>pg(id),L=(id,def)=>esc(T(id)?T(id).t:def),H=id=>T(id)?'#'+id:'#home',D_=id=>esc((T(id)||{}).d||'');
 const P=(id,def,cls)=>'<div class="pw '+cls+'"><a class="pn" href="'+H(id)+'" style="'+esc(bgs(T(id)))+'" data-t="'+L(id,def)+'" data-d="'+D_(id)+'"><b>'+L(id,def)+'</b></a></div>';
 let h='<div class="hm"><div class="pw ttlw"><div class="ttl"><b>'+esc(p.t)+'</b></div></div>'+P('sinopse','Synopsis','syn')+P('perguntas','The questions of the fucking world','qq');
@@ -168,8 +197,8 @@ if(d){const al=(d.allow||[]).map(u=>(acc.find(a=>a.id===u)||{}).username||u).joi
 h+='<input class="ti" data-f="t" value="'+esc(d.t)+'"><div class="row"><label>Quem vê <select data-f="vis"><option value="public"'+(d.vis==='public'?' selected':'')+'>Todos</option><option value="players"'+(d.vis==='players'?' selected':'')+'>Jogadores logados</option><option value="restrict"'+(d.vis==='restrict'?' selected':'')+'>Só os listados</option></select></label><input data-f="allow" value="'+esc(al)+'" placeholder="usuários liberados, separados por vírgula"></div>';
 h+='<div class="row"><input data-f="d" value="'+esc(d.d||'')+'" placeholder="Descrição curta (aparece ao passar o mouse)"><input data-f="img" value="'+esc(d.img||'')+'" placeholder="Imagem do card/painel: imgs/arquivo.jpg ou https://..."></div><div class="row"><label>Cards filhos <select data-f="ck">'+[['','Normal'],['hero','Heróis'],['npc','NPCs'],['lore','Lore']].map(o=>'<option value="'+o[0]+'"'+((d.ck||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Enviar imagem do card <input type="file" id="cimg" accept="image/*" style="width:auto"></label></div>'+(p.id==='home'?'<div class="row"><input data-f="co" value="'+esc(d.co||'')+'" placeholder="Título do bloco de personagens"></div>':'');
 h+='<div class="row"><label>Capa <input type="color" data-f="c1" value="'+cc[0]+'"><input type="color" data-f="c2" value="'+(cc[1]||cc[0])+'"></label><label>Imagem <input type="file" id="img" accept="image/*" style="width:auto"></label></div>';
-h+='<textarea data-f="b" rows="16">'+esc(d.b||'')+'</textarea><p class="hint"># título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" bloco recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button><button data-act="add" data-card="1">+ Novo card</button>'+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
-else h+='<h1>'+esc(p.t)+'</h1>'+(okimg(p.img)?'<img src="'+esc(p.img)+'" alt="" class="pic">':'')+'<div class="box">'+md(p.b||'')+'</div>';
+h+=blEd()+'<p class="hint">Nos blocos de texto: # título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button><button data-act="add" data-card="1">+ Novo card</button>'+(p.id!=='home'?'<button data-act="pmv" data-d="-1">Subir na ordem</button><button data-act="pmv" data-d="1">Descer na ordem</button>':'')+''+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
+else h+='<h1>'+esc(p.t)+'</h1>'+(okimg(p.img)?'<img src="'+esc(p.img)+'" alt="" class="pic">':'')+'<div class="box">'+(Array.isArray(p.bl)?blV(p):md(p.b||''))+'</div>';
 if(kids.length)h+=(p.ck||kids.some(x=>x.k||x.img))?'<div class="cards">'+kids.map(x=>'<a class="cd" href="#'+x.id+'"><div class="ci" style="'+esc(bgs(x))+'"></div><b>'+esc(x.t)+(KT[x.k]?'<i class="tag">'+KT[x.k]+'</i>':'')+'</b>'+(x.d?'<span>'+esc(x.d)+'</span>':'')+'</a>').join('')+'</div>':'<div class="subs">'+kids.map(x=>'<a href="#'+x.id+'">'+esc(x.t)+'</a>').join('')+'</div>';
 return h+'</div>'}
 function render(){if(cur==='conta'&&!me)cur='entrar';if(cur==='entrar'&&me)cur='conta';
@@ -179,17 +208,18 @@ if(isMod()&&!sp&&p)h+='<button data-act="edit">'+(edit?'Ver como jogador':'Edita
 h+='<button data-act="prof">'+(me?esc(prof.display||me.username):'Entrar')+'</button></div><div class="wrap"><aside id="sd" class="'+(side?'open':'')+'">'+tree('')+'</aside><main>';
 h+=sp?'<div class="cover" style="background:'+grad('#e8202a,#ffd500')+'"></div><div class="pg">'+(cur==='entrar'?loginV():contaV())+'</div>':(p?pageV(p):'<div class="pg"><p>Carregando…</p></div>');
 root.innerHTML=h+'</main></div>'+(dr&&edit&&D&&!sp?drawer():'');document.title=(pg('home')||{t:'Mesa'}).t}
-function go(){cur=location.hash.slice(1)||'home';side=false;D=edit&&pg(cur)?structuredClone(pg(cur)):null;render();scrollTo(0,0)}
+function go(){cur=location.hash.slice(1)||'home';side=false;D=edit&&pg(cur)?cd(pg(cur)):null;render();scrollTo(0,0)}
 addEventListener('hashchange',go);
-root.addEventListener('input',e=>{const k=e.target.dataset.th;if(k&&D){D.th=D.th||{};const v=e.target.type==='checkbox'?e.target.checked:e.target.value;if(v==='')delete D.th[k];else D.th[k]=v;applyTheme(themeFor(pg(cur)));return}
+root.addEventListener('input',e=>{const bi=e.target.dataset.bi;if(bi!==undefined&&D){const b=D.bl[+bi],c=e.target.dataset.ci;if(c!==undefined)b.c[+c]=e.target.value;else b[e.target.dataset.bf]=e.target.value;return}
+const k=e.target.dataset.th;if(k&&D){D.th=D.th||{};const v=e.target.type==='checkbox'?e.target.checked:e.target.value;if(v==='')delete D.th[k];else D.th[k]=v;applyTheme(themeFor(pg(cur)));return}
 const f=e.target.dataset.f;if(!f||!D)return;
 if(f==='c1'||f==='c2'){const a=(D.c||'#333,#555').split(',');a[f==='c1'?0:1]=e.target.value;D.c=a.join(',');root.querySelector('.cover').style.background=grad(D.c)}
 else if(f==='allow')D.allow=e.target.value.split(',').map(x=>x.trim().toLowerCase()).map(n=>(acc.find(a=>a.username===n)||{}).id).filter(Boolean);
 else D[f]=e.target.value});
 async function up(file){const g=JSON.parse(localStorage.getItem('gh')||'{}');if(!g.repo||!g.token)throw 0;const bm=await createImageBitmap(file),k=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement('canvas');cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext('2d').drawImage(bm,0,0,cv.width,cv.height);
 const name='imgs/'+Date.now().toString(36)+'.jpg',r=await fetch('https://api.github.com/repos/'+g.repo+'/contents/'+name,{method:'PUT',headers:{Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json'},body:JSON.stringify({message:'imagem '+name,content:cv.toDataURL('image/jpeg',.85).split(',')[1],branch:g.branch||'main'})});if(!r.ok)throw r.status;return name}
-root.addEventListener('change',async e=>{const ci=e.target.id==='cimg',bi=e.target.id==='bimg';if((e.target.id!=='img'&&!ci&&!bi)||!e.target.files[0]||!D)return;say('Enviando imagem…');
-try{const n=await up(e.target.files[0]);if(bi){D.th=D.th||{};D.th.bi=n}else if(ci)D.img=n;else D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
+root.addEventListener('change',async e=>{const ub=e.target.dataset.up,ci=e.target.id==='cimg',bi=e.target.id==='bimg';if((e.target.id!=='img'&&!ci&&!bi&&ub===undefined)||!e.target.files[0]||!D)return;say('Enviando imagem…');
+try{const n=await up(e.target.files[0]);if(ub!==undefined)D.bl[+ub].x=n;else if(bi){D.th=D.th||{};D.th.bi=n}else if(ci)D.img=n;else D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
 const drop=async id=>{for(const k of S.pages.filter(x=>x.p===id))await drop(k.id);await deleteDoc(doc(db,'pages',id))};
 root.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;
 try{
@@ -197,14 +227,19 @@ if(k==='menu'){side=!side;document.getElementById('sd').classList.toggle('open',
 else if(k==='seed'){const R=[['sinopse','Synopsis','#1b5fd6,#6dd5fa','A campanha em poucas linhas.',''],['perguntas','The questions of the fucking world','#e8202a,#8a1c1c','O que o mundo ainda não respondeu.',''],['herois','Heróis','#11998e,#38ef7d','Você e seus colegas de merda.','hero'],['npcs','NPCs','#41295a,#e8202a','Quem mais está nessa história.','npc'],['lore','Infos extras','#232526,#6b6b6b','Lore, regras da casa e curiosidades.','lore'],['tales','Tales of Project H','#f12711,#f5af19','Registro das sessões.','']];
 await Promise.all(R.map((r,i)=>setDoc(doc(db,'pages',r[0]),{t:r[1],b:'',p:'home',o:i+1,vis:'public',c:r[2],d:r[3],ck:r[4]})));await load();render()}
 else if(k==='draw'){dr=!dr;render()}
+else if(k==='badd'){D.bl.push(nb(a.dataset.t));render()}
+else if(k==='bdel'){D.bl.splice(+a.dataset.i,1);render()}
+else if(k==='bmv'){const i=+a.dataset.i,j=i+ +a.dataset.d;if(j>=0&&j<D.bl.length){[D.bl[i],D.bl[j]]=[D.bl[j],D.bl[i]];render()}}
+else if(k==='bcol'){const b=D.bl[+a.dataset.i],d=+a.dataset.d;if(d>0&&b.c.length<4)b.c.push('');if(d<0&&b.c.length>1)b.c.pop();render()}
+else if(k==='pmv'){const p=pg(cur),par=p.p||'',j=sibs(par).findIndex(x=>x.id===p.id)+ +a.dataset.d;if(j<0||j>=sibs(par).length)return;await place(p.id,par,j);await load();render()}
 else if(k==='thclr'){if(D.th)delete D.th[a.dataset.k];render()}
 else if(k==='threset'){D.th={};render()}
 else if(k==='prof')location.hash=me?'conta':'entrar';
-else if(k==='edit'){edit=!edit;D=edit?structuredClone(pg(cur)):null;render()}
+else if(k==='edit'){edit=!edit;D=edit?cd(pg(cur)):null;render()}
 else if(k==='tab'){tab=a.dataset.t;render()}
 else if(k==='login'){try{await signInWithEmailAndPassword(auth,mail(V('ln')),V('lp'));location.hash='conta'}catch(x){say('Usuário ou senha incorretos')}}
 else if(k==='logout'){await signOut(auth);edit=false;location.hash='home'}
-else if(k==='save'){const {id,...r}=D;await setDoc(doc(db,'pages',id),r);await load();say('Salvo')}
+else if(k==='save'){const {id,p:_p,o:_o,...r}=D;await updateDoc(doc(db,'pages',id),r);await load();say('Salvo')}
 else if(k==='add'){const id='p'+Date.now().toString(36);await setDoc(doc(db,'pages',id),{t:a.dataset.card?'Novo card':'Nova página',b:'',p:cur,o:Date.now(),vis:'public',c:'#1b5fd6,#6dd5fa',k:a.dataset.card?(pg(cur).ck||''):''});await load();location.hash=id}
 else if(k==='del'){if(!arm){arm=true;a.textContent='Confirmar exclusão?';return}arm=false;const par=pg(cur).p;await drop(cur);await load();location.hash=par||'home'}
 else if(k==='savenote'){prof={...prof,notes:V('nt')};await setDoc(doc(db,'players',me.username),prof);say('Salvo')}
@@ -214,6 +249,13 @@ else if(k==='mk'){const n=V('nu').trim().toLowerCase().replace(/[^a-z0-9._-]/g,'
 const sa=getAuth(initializeApp(firebaseConfig,'sec'+Date.now())),c=await createUserWithEmailAndPassword(sa,mail(n),p);await setDoc(doc(db,'accounts',c.user.uid),{username:n,role:'player'});await signOut(sa);await loadMe(auth.currentUser);say('Jogador criado')}
 else if(k==='savegh'){localStorage.setItem('gh',JSON.stringify({repo:V('gr').trim(),branch:V('gb').trim(),token:V('gt').trim()}));say('Salvo neste aparelho')}
 }catch(x){say('Não foi possível concluir a ação')}});
+let dg=null;const zone=(e,a)=>{const r=a.getBoundingClientRect(),y=(e.clientY-r.top)/r.height;return a.dataset.id==='home'?'i':y<.28?'b':y>.72?'a':'i'},clr=()=>root.querySelectorAll('.dz').forEach(x=>x.classList.remove('dz','dz-b','dz-a','dz-i'));
+root.addEventListener('dragstart',e=>{const a=e.target.closest&&e.target.closest('a[data-id]');if(a&&isMod()){dg=a.dataset.id;e.dataTransfer.setData('text/plain',dg);e.dataTransfer.effectAllowed='move'}});
+root.addEventListener('dragover',e=>{const a=e.target.closest&&e.target.closest('a[data-id]');if(!a||!dg)return;e.preventDefault();clr();a.classList.add('dz','dz-'+zone(e,a))});
+root.addEventListener('dragend',()=>{dg=null;clr()});
+root.addEventListener('drop',async e=>{const a=e.target.closest&&e.target.closest('a[data-id]');if(!a||!dg)return;e.preventDefault();const id=dg,t=a.dataset.id,z=zone(e,a);dg=null;clr();
+if(id===t||isDesc(t,id))return;let par,idx;if(z==='i'){par=t;idx=sibs(t).length}else{par=pg(t).p||'';idx=sibs(par).filter(x=>x.id!==id).findIndex(x=>x.id===t)+(z==='a'?1:0)}
+try{await place(id,par,idx);await load();render()}catch(x){say('Não foi possível mover a página')}});
 root.addEventListener('mouseover',e=>{const a=e.target.closest('[data-d]'),t=document.getElementById('hdt');if(a&&t){t.textContent=a.dataset.t;document.getElementById('hdp').textContent=a.dataset.d}});
 go();
 </script></body></html>
