@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Mesa</title>
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Inter:wght@400;700&family=Lora:wght@400;700&family=Space+Mono:wght@400;700&display=swap");
-:root{--bg:#fff1c9;--fg:#141414;--card:#fff;--ink:#141414;--sh:#141414;--y:#ffd500;--r:#e8202a;--b:#1b5fd6;--dot:rgba(0,0,0,.13);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#ffd500;--dot:rgba(255,255,255,.07)}}
-:root[data-theme="dark"]{--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#ffd500;--dot:rgba(255,255,255,.07)}
+@import url("https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Inter:wght@400;700&family=Lora:wght@400;700&family=Space+Mono:wght@400;700&family=Special+Elite&family=Orbitron:wght@500;700&display=swap");
+:root{--bg:#fff1c9;--fg:#141414;--card:#fff;--ink:#141414;--sh:#141414;--y:#e9b44c;--r:#e8202a;--b:#1b5fd6;--dot:rgba(0,0,0,.13);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#e9b44c;--dot:rgba(255,255,255,.07)}}
+:root[data-theme="dark"]{--bg:#0e1633;--fg:#f4f4f4;--card:#1a2757;--ink:#000;--sh:#e9b44c;--dot:rgba(255,255,255,.07)}
 :root[data-theme="light"]{--bg:#fff1c9;--fg:#141414;--card:#fff;--ink:#141414;--sh:#141414;--dot:rgba(0,0,0,.13)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
 body{margin:0;color:var(--fg);background:var(--bg);background-image:var(--bi,none),radial-gradient(circle,var(--dot) 1.4px,transparent 1.8px);background-size:cover,11px 11px;background-attachment:fixed,scroll;font:17px/1.55 var(--bf)}
@@ -126,7 +126,7 @@ async function loadMe(u){me=null;prof={};if(!u)return;const a=await getDoc(doc(d
 me={uid:u.uid,...a.data()};const p=await getDoc(doc(db,'players',me.username));prof=p.exists()?p.data():{};
 if(isMod()){acc=(await getDocs(collection(db,'accounts'))).docs.map(d=>({id:d.id,...d.data()}));try{const iv=await getDoc(doc(db,'config','invite'));inv=iv.exists()?iv.data().code||'':''}catch(e){}}}
 onAuthStateChanged(auth,async u=>{if(rg)return;try{await loadMe(u)}catch(e){me=null}try{await load()}catch(e){S.pages=[]}
-if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#ffd500'});await load()}render()});
+if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#e9b44c'});await load()}render()});
 const say=t=>{msg=t;render()};
 function loginV(){const f='<div class="row"><input id="ln" placeholder="Nome de usuário" autocapitalize="none"><input id="lp" type="password" placeholder="Senha'+(rm?' (mín. 6)':'')+'"></div>';
 return rm?'<h1>Criar conta</h1><p class="hint">Escolha um nome de usuário e uma senha.</p>'+f+'<div class="row"><button data-act="reg">Criar conta</button><button data-act="rmode">Já tenho conta</button></div>':'<h1>Entrar</h1>'+f+'<div class="row"><button data-act="login">Entrar</button><button data-act="rmode">Criar conta</button></div>'}
@@ -141,16 +141,20 @@ return h+'<div class="box"><h3>Novo jogador</h3><div class="row"><input id="nu" 
 const okimg=u=>/^(imgs\/[\w.-]+|https:\/\/[^\s"'<>()]+)$/.test(u||''),KT={hero:'HERÓI',npc:'NPC',lore:'LORE'};
 const bgs=x=>x&&okimg(x.img)?'background-image:url('+x.img+')':'background:'+grad((x&&x.c)||'#1b5fd6,#6dd5fa');
 const okc=c=>/^#[0-9a-f]{3,8}$/i.test(c||'');
-const FH={bangers:'Bangers,Impact,"Arial Narrow",sans-serif',comic:'"Comic Neue","Comic Sans MS",system-ui,sans-serif',inter:'Inter,system-ui,sans-serif',lora:'Lora,Georgia,serif',mono:'"Space Mono",ui-monospace,monospace'},WD={s:'620px',m:'780px',l:'1100px',f:'100%'};
+const FH={bangers:'Bangers,Impact,"Arial Narrow",sans-serif',comic:'"Comic Neue","Comic Sans MS",system-ui,sans-serif',inter:'Inter,system-ui,sans-serif',lora:'Lora,Georgia,serif',mono:'"Space Mono",ui-monospace,monospace',typew:'"Special Elite","Courier New",monospace',orb:'Orbitron,"Segoe UI",sans-serif'},WD={s:'620px',m:'780px',l:'1100px',f:'100%'};
 const PRE={auto:{n:'Automático (claro/escuro do aparelho)',st:'hq',v:null},
-'hq-papel':{n:'HQ papel',st:'hq',v:{'--bg':'#fff1c9','--fg':'#141414','--card':'#ffffff','--ink':'#141414','--sh':'#141414','--y':'#ffd500','--r':'#e8202a','--b':'#1b5fd6','--dot':'rgba(0,0,0,.13)','--tc':'#141414','--hf':FH.bangers,'--bf':FH.comic}},
-'hq-noite':{n:'HQ noite',st:'hq',v:{'--bg':'#0e1633','--fg':'#f4f4f4','--card':'#1a2757','--ink':'#000000','--sh':'#ffd500','--y':'#ffd500','--r':'#e8202a','--b':'#1b5fd6','--dot':'rgba(255,255,255,.07)','--tc':'#141414','--hf':FH.bangers,'--bf':FH.comic}},
+'hq-papel':{n:'HQ papel',st:'hq',v:{'--bg':'#fff1c9','--fg':'#141414','--card':'#ffffff','--ink':'#141414','--sh':'#141414','--y':'#e9b44c','--r':'#e8202a','--b':'#1b5fd6','--dot':'rgba(0,0,0,.13)','--tc':'#141414','--hf':FH.bangers,'--bf':FH.comic}},
+'hq-noite':{n:'HQ noite',st:'hq',v:{'--bg':'#0e1633','--fg':'#f4f4f4','--card':'#1a2757','--ink':'#000000','--sh':'#e9b44c','--y':'#e9b44c','--r':'#e8202a','--b':'#1b5fd6','--dot':'rgba(255,255,255,.07)','--tc':'#141414','--hf':FH.bangers,'--bf':FH.comic}},
 'notion-claro':{n:'Minimalista claro (estilo Notion)',st:'flat',v:{'--bg':'#ffffff','--fg':'#37352f','--card':'#ffffff','--ink':'#e3e2e0','--sh':'transparent','--y':'#f7f6f3','--r':'#eb5757','--b':'#2383e2','--dot':'transparent','--tc':'#37352f','--hf':FH.inter,'--bf':FH.inter}},
 'notion-escuro':{n:'Minimalista escuro',st:'flat',v:{'--bg':'#191919','--fg':'#ececec','--card':'#202020','--ink':'#373737','--sh':'transparent','--y':'#202020','--r':'#eb5757','--b':'#529cf5','--dot':'transparent','--tc':'#ececec','--hf':FH.inter,'--bf':FH.inter}},
 'noir':{n:'Noir',st:'hq',v:{'--bg':'#121212','--fg':'#e6e6e6','--card':'#1d1d1d','--ink':'#000000','--sh':'#7a0c18','--y':'#c9a227','--r':'#d11a2a','--b':'#6b7a8f','--dot':'rgba(255,255,255,.04)','--tc':'#141414','--hf':FH.lora,'--bf':FH.lora}},
+'synthwave':{n:'Synthwave',st:'hq',v:{'--bg':'#14052e','--fg':'#f6e9ff','--card':'#241047','--ink':'#ff2bd6','--sh':'#00e5ff','--y':'#ff4fc3','--r':'#00e5ff','--b':'#7c4dff','--dot':'rgba(255,43,214,.10)','--tc':'#1a0533','--hf':FH.mono,'--bf':FH.inter,'--bi':'linear-gradient(180deg,#14052e 0%,#2b0a5a 55%,#5a0f6e 100%)'}},
+'arquivo':{n:'Sala de arquivos',st:'hq',v:{'--bg':'#cfc5a8','--fg':'#2b2a26','--card':'#efe6cc','--ink':'#3d3a33','--sh':'#8a8372','--y':'#b9a77a','--r':'#a3201f','--b':'#4a5a4f','--dot':'rgba(60,50,30,.12)','--tc':'#2b2a26','--hf':FH.typew,'--bf':FH.lora}},
+'gov-sci':{n:'Sistema de governo sci-fi',st:'flat',v:{'--bg':'#07131c','--fg':'#d7f3ff','--card':'#0d2230','--ink':'#1f7a99','--sh':'transparent','--y':'#0d2230','--r':'#ffb000','--b':'#1f7a99','--dot':'transparent','--tc':'#7fe9ff','--hf':FH.orb,'--bf':FH.inter,'--bi':'repeating-linear-gradient(0deg,rgba(43,212,255,.05) 0 1px,transparent 1px 3px)'}},
 'neon':{n:'Neon',st:'hq',v:{'--bg':'#0a0014','--fg':'#f0e6ff','--card':'#1a0030','--ink':'#00e5ff','--sh':'#ff2bd6','--y':'#00e5ff','--r':'#ff2bd6','--b':'#7c4dff','--dot':'rgba(0,229,255,.08)','--tc':'#0a0014','--hf':FH.mono,'--bf':FH.mono}}};
+const DEF_TH={sinopse:{p:'hq-papel',inh:1,cv:'#e8202a,#e9b44c'},perguntas:{p:'synthwave',inh:1,cv:'#ff2bd6,#3a0ca3'},tales:{p:'arquivo',inh:1,cv:'#6b4f2a,#c8a96a'},herois:{p:'gov-sci',inh:1,cv:'#06283d,#1b8aa8'},npcs:{p:'gov-sci',inh:1,cv:'#0b2f2a,#1b8a7a'}};
 const thOf=n=>(edit&&D&&D.id===n.id)?D.th:n.th;
-function themeFor(p){const ch=[];for(let n=p;n;n=pg(n.p))ch.unshift(n);const m={};ch.forEach(n=>{const t=thOf(n);if(t&&(n.id===p.id||t.inh))Object.assign(m,t)});return m}
+function themeFor(p){const ch=[];for(let n=p;n;n=pg(n.p))ch.unshift(n);const m={};ch.forEach(n=>{[DEF_TH[n.id],thOf(n)].forEach(t=>{if(t&&(n.id===p.id||t.inh))Object.assign(m,t)})});return m}
 function applyTheme(t){t=t||{};const R=document.documentElement,st=R.style;['--bg','--fg','--card','--ink','--sh','--y','--r','--b','--dot','--hf','--bf','--tc','--bi','--w'].forEach(k=>st.removeProperty(k));
 const b=PRE[t.p];if(b&&b.v)Object.keys(b.v).forEach(k=>st.setProperty(k,b.v[k]));R.dataset.st=b?b.st:'hq';
 if(okc(t.bg))st.setProperty('--bg',t.bg);if(okc(t.fg))st.setProperty('--fg',t.fg);if(okc(t.ac))st.setProperty('--r',t.ac);
@@ -158,7 +162,7 @@ if(FH[t.hf])st.setProperty('--hf',FH[t.hf]);if(FH[t.bf])st.setProperty('--bf',FH
 if(okimg(t.bi))st.setProperty('--bi','url('+t.bi+')');if(WD[t.w])st.setProperty('--w',WD[t.w])}
 function drawer(){const o=D.th||{},sel=(k,opts)=>'<select data-th="'+k+'">'+opts.map(x=>'<option value="'+x[0]+'"'+((o[k]||'')===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select>',
 col=(k,def)=>'<div class="row"><input type="color" data-th="'+k+'" value="'+(okc(o[k])?o[k]:def)+'"><button data-act="thclr" data-k="'+k+'">Padrão</button></div>',
-FO=[['','Padrão do tema'],['bangers','HQ (Bangers)'],['comic','Comic Neue'],['inter','Inter (limpa)'],['lora','Lora (serifada)'],['mono','Space Mono']];
+FO=[['','Padrão do tema'],['bangers','HQ (Bangers)'],['comic','Comic Neue'],['inter','Inter (limpa)'],['lora','Lora (serifada)'],['mono','Space Mono'],['typew','Máquina de escrever'],['orb','Orbitron (sci-fi)']];
 return '<div class="dw"><h3>Personalizar página</h3><label>Tema</label>'+sel('p',[['','Herdar'],...Object.keys(PRE).map(k=>[k,PRE[k].n])])
 +'<label>Cor de fundo</label>'+col('bg','#ffffff')+'<label>Cor do texto</label>'+col('fg','#141414')+'<label>Cor de destaque</label>'+col('ac','#e8202a')
 +'<label>Imagem de fundo</label><div class="row"><input data-th="bi" value="'+esc(o.bi||'')+'" placeholder="imgs/arquivo.jpg ou https://..."></div><div class="row"><input type="file" id="bimg" accept="image/*"></div>'
@@ -189,9 +193,10 @@ const sibs=par=>S.pages.filter(x=>(x.p||'')===par).sort((a,b)=>(a.o||0)-(b.o||0)
 async function place(id,par,idx){const l=sibs(par).filter(x=>x.id!==id);l.splice(idx,0,pg(id));
 await Promise.all(l.map((x,i)=>(x.id===id||(x.o||0)!==(i+1)*10)?setDoc(doc(db,'pages',x.id),{p:par,o:(i+1)*10},{merge:true}):null).filter(Boolean))}
 const okurl=u=>/^https:\/\/[^\s"'<>]+$/.test(u||'');
-function defPn(){const T=id=>pg(id)||{},h=pg('home')||{},mk=(id,def,o)=>({id,t:T(id).t||def,l:T(id).t?id:'',u:'',d:T(id).d||'',c:T(id).c||'#1b5fd6,#6dd5fa',img:T(id).img||'',bt:[],ht:'m',...o});
+const PNC={sinopse:'#e8202a,#e9b44c',perguntas:'#ff2bd6,#3a0ca3',tales:'#6b4f2a,#c8a96a'};
+function defPn(){const T=id=>pg(id)||{},h=pg('home')||{},mk=(id,def,o)=>({id,t:T(id).t||def,l:T(id).t?id:'',u:'',d:T(id).d||'',c:PNC[id]||T(id).c||'#1b5fd6,#6dd5fa',img:T(id).img||'',bt:[],ht:'m',...o});
 return [mk('sinopse','Synopsis',{w:'7',s:'a'}),mk('perguntas','The questions of the fucking world',{w:'12',s:'b',ht:'p'}),
-{id:'grupo',t:h.co||'You and your asshole co-workers',l:'',u:'',d:'',w:'7',s:'c',ht:'g',c:h.c||'#e8202a,#ffd500',img:h.img||'',bt:[{t:T('herois').t||'Heróis',l:T('herois').t?'herois':'',u:'',d:T('herois').d||''},{t:T('npcs').t||'NPCs',l:T('npcs').t?'npcs':'',u:'',d:T('npcs').d||''}]},
+{id:'grupo',t:h.co||'You and your asshole co-workers',l:'',u:'',d:'',w:'7',s:'c',ht:'g',c:'#06283d,#1b8aa8',img:h.img||'',bt:[{t:T('herois').t||'Heróis',l:T('herois').t?'herois':'',u:'',d:T('herois').d||''},{t:T('npcs').t||'NPCs',l:T('npcs').t?'npcs':'',u:'',d:T('npcs').d||''}]},
 mk('tales','Tales of Project H',{w:'5',s:'d',ht:'g'}),{id:'jogo',t:'Jogo',l:'',u:'',d:'Em breve.',w:'12',s:'e',ht:'p',c:'#f12711,#f5af19',img:'',bt:[]}]}
 const pnU=x=>okurl(x.u)?x.u:(x.l&&pg(x.l)?'#'+x.l:''),pnA=u=>u&&u[0]!=='#'?' target="_blank" rel="noopener"':'';
 async function register(){const n=V('ln').trim().toLowerCase().replace(/[^a-z0-9._-]/g,''),p=V('lp');if(!n||p.length<6){say('Informe nome e senha (mín. 6 caracteres)');return}
@@ -216,7 +221,7 @@ return '<div class="bk"><div class="bkh"><b>'+esc(x.t||'Painel')+'</b><span><but
 +'<div class="row"><label>Cores <input type="color"'+at(i,'c1')+' value="'+cc[0]+'"><input type="color"'+at(i,'c2')+' value="'+(cc[1]||cc[0])+'"></label><input type="file" accept="image/*" data-pup="'+i+'" style="width:auto"></div>'+inp(i,'img',x.img,'Imagem de fundo (imgs/... ou https://...)')
 +'<label>Balões (opcional)</label>'+(x.bt||[]).map((b,j)=>'<div class="row">'+inp(i,'t',b.t,'Texto',j)+sel(i,'l',b.l,L,j)+'<button data-act="hbdel" data-i="'+i+'" data-j="'+j+'">×</button></div>').join('')+'<button data-act="hbadd" data-i="'+i+'">+ balão</button></div>'}).join('')+'<div class="row"><button data-act="hpadd">+ Novo painel</button></div>'}
 function pageV(p){if(p.id==='home'&&!(edit&&D))return homeV(p);const kids=S.pages.filter(x=>x.p===p.id),d=edit&&D&&D.id===p.id?D:null,cc=((d||p).c||'#333,#555').split(',');
-const tr=themeFor(p);let h=(tr.nocover?'':'<div class="cover" style="background:'+grad((d||p).c)+'"></div>')+'<div class="pg'+(tr.nocover?' nc':'')+'">';
+const tr=themeFor(p);let h=(tr.nocover?'':'<div class="cover" style="background:'+grad(tr.cv||(d||p).c)+'"></div>')+'<div class="pg'+(tr.nocover?' nc':'')+'">';
 if(d){const al=(d.allow||[]).map(u=>(acc.find(a=>a.id===u)||{}).username||u).join(', ');
 h+='<input class="ti" data-f="t" value="'+esc(d.t)+'"><div class="row"><label>Quem vê <select data-f="vis"><option value="public"'+(d.vis==='public'?' selected':'')+'>Todos</option><option value="players"'+(d.vis==='players'?' selected':'')+'>Jogadores logados</option><option value="restrict"'+(d.vis==='restrict'?' selected':'')+'>Só os listados</option></select></label><input data-f="allow" value="'+esc(al)+'" placeholder="usuários liberados, separados por vírgula"></div>';
 h+='<div class="row"><input data-f="d" value="'+esc(d.d||'')+'" placeholder="Descrição curta (aparece ao passar o mouse)"><input data-f="img" value="'+esc(d.img||'')+'" placeholder="Imagem do card/painel: imgs/arquivo.jpg ou https://..."></div><div class="row"><label>Cards filhos <select data-f="ck">'+[['','Normal'],['hero','Heróis'],['npc','NPCs'],['lore','Lore']].map(o=>'<option value="'+o[0]+'"'+((d.ck||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Enviar imagem do card <input type="file" id="cimg" accept="image/*" style="width:auto"></label></div>'+(p.id==='home'?'<div class="row"><input data-f="co" value="'+esc(d.co||'')+'" placeholder="Título do bloco de personagens"></div>':'');
@@ -230,7 +235,7 @@ const sp=cur==='entrar'||cur==='conta';let p=pg(cur);if(!sp&&!p){cur='home';p=pg
 let h='<div class="top"><button id="mb" data-act="menu">Menu</button><span class="crumbs bn">'+(sp?(cur==='conta'?'Conta':'Entrar'):esc(p?p.t:''))+'</span><span class="sp"></span><span class="hint">'+esc(msg)+'</span>';
 if(isMod()&&!sp&&p)h+='<button data-act="edit">'+(edit?'Ver como jogador':'Editar')+'</button>'+(edit?'<button data-act="draw">Personalizar</button>':'');
 h+='<button data-act="prof">'+(me?esc(prof.display||me.username):'Entrar')+'</button></div><div class="wrap"><aside id="sd" class="'+(side?'open':'')+'"><label class="tg"><input type="checkbox" data-act="allp"'+(allp?' checked':'')+' style="width:auto"> Mostrar todas as páginas</label>'+tree('')+'</aside><main>';
-h+=sp?'<div class="cover" style="background:'+grad('#e8202a,#ffd500')+'"></div><div class="pg">'+(cur==='entrar'?loginV():contaV())+'</div>':(p?pageV(p):'<div class="pg"><p>Carregando…</p></div>');
+h+=sp?'<div class="cover" style="background:'+grad('#e8202a,#e9b44c')+'"></div><div class="pg">'+(cur==='entrar'?loginV():contaV())+'</div>':(p?pageV(p):'<div class="pg"><p>Carregando…</p></div>');
 root.innerHTML=h+'</main></div>'+(dr&&edit&&D&&!sp?drawer():'');document.title=(pg('home')||{t:'Mesa'}).t}
 function go(){cur=location.hash.slice(1)||'home';side=false;D=edit&&pg(cur)?cd(pg(cur)):null;render();scrollTo(0,0)}
 addEventListener('hashchange',go);
