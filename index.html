@@ -39,7 +39,37 @@ input.ti{font:400 34px Bangers,Impact,sans-serif}input.ic{width:96px;font-size:3
 .row{display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap}.row label{display:flex;gap:8px;align-items:center;font-weight:700}
 .hint{font-size:13px;opacity:.75}.log{border-left:6px solid var(--r);padding:4px 12px;margin:12px 0;background:var(--card)}
 @media(max-width:800px){#mb{display:inline-block}aside{position:fixed;left:0;top:calc(56px + env(safe-area-inset-top,0px));bottom:0;height:auto;z-index:6;background:var(--bg);border-right:4px solid var(--ink);transform:translateX(-100%);transition:transform .2s}aside.open{transform:none}h1{font-size:34px}}
+
+.pw{--oc:#141414;filter:drop-shadow(3px 0 0 var(--oc)) drop-shadow(-3px 0 0 var(--oc)) drop-shadow(0 3px 0 var(--oc)) drop-shadow(0 -3px 0 var(--oc)) drop-shadow(7px 7px 0 var(--sh))}.pw:hover{--oc:var(--y)}
+.hm{max-width:1100px;margin:0 auto;padding:22px 18px 40px;display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+.pn{position:relative;display:flex;align-items:center;justify-content:center;min-height:130px;height:100%;color:#fff;text-decoration:none;overflow:hidden;background-size:cover;background-position:center;transition:transform .15s}
+.pn::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.35) 1.5px,transparent 2px) 0 0/8px 8px}
+a.pn:hover,a.pn:focus{transform:scale(1.04) rotate(-1deg);outline:none}
+.pn>b{position:relative;font:400 clamp(24px,4.4vw,44px)/1 Bangers,Impact,sans-serif;letter-spacing:.05em;text-transform:uppercase;transform:rotate(-4deg);-webkit-text-stroke:2px #000;paint-order:stroke fill;text-shadow:3px 3px 0 #000;text-align:center;padding:10px 18px}
+.ttlw{grid-column:span 5}.syn{grid-column:span 7}.qq{grid-column:span 12}.co{grid-column:span 7}.ex{grid-column:span 5}.tl{grid-column:span 12}
+.ttl{height:100%;display:flex;align-items:center;background:var(--y);clip-path:polygon(0 0,100% 0,88% 100%,0 100%);padding:16px 70px 16px 24px}
+.ttl b{font:400 clamp(40px,7vw,76px)/1 Bangers,Impact,sans-serif;color:var(--r);-webkit-text-stroke:2px #000;paint-order:stroke fill;text-shadow:4px 4px 0 #000;transform:rotate(-3deg);display:block}
+.syn .pn{clip-path:polygon(9% 0,100% 0,100% 100%,0 100%);min-height:170px}.qq .pn{clip-path:polygon(0 0,97% 0,100% 100%,3% 100%);min-height:96px}
+.co .pn{clip-path:polygon(0 3%,100% 0,97% 100%,0 100%);flex-direction:column;min-height:230px}.ex .pn{clip-path:polygon(4% 0,100% 0,100% 100%,0 96%);min-height:230px}.tl .pn{clip-path:polygon(0 0,100% 6%,100% 100%,0 100%);min-height:110px}
+.bbs{position:relative;display:flex;gap:18px;flex-wrap:wrap;justify-content:center;padding:6px 10px 16px}
+.bb{position:relative;background:#fff;color:#000;border:4px solid #000;border-radius:26px;padding:6px 24px;font:400 28px Bangers,Impact,sans-serif;letter-spacing:.04em;text-decoration:none;box-shadow:4px 4px 0 #000}
+.bb::after{content:"";position:absolute;left:26px;bottom:-15px;border:9px solid transparent;border-top-color:#000;border-bottom:0}.bb:hover{background:var(--y)}
+.hd{grid-column:span 12;background:var(--card);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--sh);padding:6px 18px 10px}.hd b{font:400 26px Bangers,Impact,sans-serif;color:var(--r);letter-spacing:.04em}.hd p{margin:2px 0 0}
+.cards{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:18px}
+.cd{display:block;text-decoration:none;border:4px solid var(--ink);background:var(--card);box-shadow:5px 5px 0 var(--sh);transition:transform .15s}.cd:hover{transform:rotate(-1.5deg) scale(1.03);border-color:var(--y)}
+.ci{aspect-ratio:3/4;background-size:cover;background-position:center;position:relative;border-bottom:4px solid var(--ink)}.ci::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.25) 1.5px,transparent 2px) 0 0/8px 8px}
+.cd b{display:block;padding:6px 10px 0;font:400 22px Bangers,Impact,sans-serif;letter-spacing:.04em}.cd span{display:block;padding:0 10px 8px;font-size:14px}
+.tag{display:inline-block;background:var(--r);color:#fff;font:400 13px Bangers,sans-serif;padding:0 6px;margin-left:6px;font-style:normal;vertical-align:middle}
+.pic{float:right;max-width:min(300px,45%);margin:0 0 12px 16px;border:5px solid var(--ink);box-shadow:6px 6px 0 var(--sh)}
+@media(max-width:800px){.hm>*{grid-column:span 12!important}}
 </style></head><body><div id="root"><p style="padding:20px">Carregando…</p></div>
+<script>
+(function(){var r=document.getElementById('root');
+function show(m){if(!document.querySelector('.top'))r.innerHTML='<div style="padding:20px;font-family:sans-serif"><b>Não foi possível iniciar o site.</b><br>'+m+'<br><br>Abra o console do navegador (F12 &gt; Console) para ver o erro completo.</div>'}
+addEventListener('error',function(e){var t=e.target;show(t&&t.src?'Falha ao carregar o arquivo: '+t.src.split('/').slice(-2).join('/'):(e.message||'erro de script'))},true);
+addEventListener('unhandledrejection',function(e){show(String(e.reason&&e.reason.message||e.reason))});
+setTimeout(function(){show('O script não terminou de carregar. Confira se o config.js foi enviado ao repositório e se você está abrindo o endereço do GitHub Pages (e não o arquivo direto no computador).')},8000)})();
+</script>
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword,updatePassword,reauthenticateWithCredential,EmailAuthProvider} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
@@ -80,14 +110,25 @@ if(tab==='git'){const g=JSON.parse(localStorage.getItem('gh')||'{}');return h+'<
 h+='<p class="hint">Esqueceu a senha de um jogador? Apague o usuário em Authentication no console do Firebase e crie de novo aqui. As anotações ficam, mas páginas restritas precisam ser liberadas outra vez.</p>';
 h+=acc.map(a=>'<div class="box"><b>'+esc(a.username)+'</b> <span class="hint">'+esc(a.role)+'</span></div>').join('');
 return h+'<div class="box"><h3>Novo jogador</h3><div class="row"><input id="nu" placeholder="Nome de usuário" autocapitalize="none"><input id="npw" type="password" placeholder="Senha (mín. 6)"><button data-act="mk">Criar</button></div></div>'}
-function pageV(p){const kids=S.pages.filter(x=>x.p===p.id),d=edit&&D&&D.id===p.id?D:null,cc=((d||p).c||'#333,#555').split(',');
+const okimg=u=>/^(imgs\/[\w.-]+|https:\/\/[^\s"'<>()]+)$/.test(u||''),KT={hero:'HERÓI',npc:'NPC',lore:'LORE'};
+const bgs=x=>x&&okimg(x.img)?'background-image:url('+x.img+')':'background:'+grad((x&&x.c)||'#1b5fd6,#6dd5fa');
+function homeV(p){const T=id=>pg(id),L=(id,def)=>esc(T(id)?T(id).t:def),H=id=>T(id)?'#'+id:'#home',D_=id=>esc((T(id)||{}).d||'');
+const P=(id,def,cls)=>'<div class="pw '+cls+'"><a class="pn" href="'+H(id)+'" style="'+esc(bgs(T(id)))+'" data-t="'+L(id,def)+'" data-d="'+D_(id)+'"><b>'+L(id,def)+'</b></a></div>';
+let h='<div class="hm"><div class="pw ttlw"><div class="ttl"><b>'+esc(p.t)+'</b></div></div>'+P('sinopse','Synopsis','syn')+P('perguntas','The questions of the fucking world','qq');
+h+='<div class="pw co"><div class="pn" style="'+esc(bgs(p))+'"><b>'+esc(p.co||'You and your asshole co-workers')+'</b><div class="bbs"><a class="bb" href="'+H('herois')+'" data-t="'+L('herois','Heróis')+'" data-d="'+D_('herois')+'">'+L('herois','Heróis')+'</a><a class="bb" href="'+H('npcs')+'" data-t="'+L('npcs','NPCs')+'" data-d="'+D_('npcs')+'">'+L('npcs','NPCs')+'</a></div></div></div>';
+h+=P('lore','Infos extras','ex')+P('tales','Tales of Project H','tl');
+h+='<div class="hd"><b id="hdt">'+esc(p.t)+'</b><p id="hdp">'+esc(p.d||'')+'</p></div>';
+if(isMod()&&!T('sinopse'))h+='<div style="grid-column:span 12"><button data-act="seed">Criar seções padrão</button></div>';
+return h+'</div>'}
+function pageV(p){if(p.id==='home'&&!(edit&&D))return homeV(p);const kids=S.pages.filter(x=>x.p===p.id),d=edit&&D&&D.id===p.id?D:null,cc=((d||p).c||'#333,#555').split(',');
 let h='<div class="cover" style="background:'+grad((d||p).c)+'"></div><div class="pg">';
 if(d){const al=(d.allow||[]).map(u=>(acc.find(a=>a.id===u)||{}).username||u).join(', ');
 h+='<input class="ti" data-f="t" value="'+esc(d.t)+'"><div class="row"><label>Quem vê <select data-f="vis"><option value="public"'+(d.vis==='public'?' selected':'')+'>Todos</option><option value="players"'+(d.vis==='players'?' selected':'')+'>Jogadores logados</option><option value="restrict"'+(d.vis==='restrict'?' selected':'')+'>Só os listados</option></select></label><input data-f="allow" value="'+esc(al)+'" placeholder="usuários liberados, separados por vírgula"></div>';
+h+='<div class="row"><input data-f="d" value="'+esc(d.d||'')+'" placeholder="Descrição curta (aparece ao passar o mouse)"><input data-f="img" value="'+esc(d.img||'')+'" placeholder="Imagem do card/painel: imgs/arquivo.jpg ou https://..."></div><div class="row"><label>Cards filhos <select data-f="ck">'+[['','Normal'],['hero','Heróis'],['npc','NPCs'],['lore','Lore']].map(o=>'<option value="'+o[0]+'"'+((d.ck||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Enviar imagem do card <input type="file" id="cimg" accept="image/*" style="width:auto"></label></div>'+(p.id==='home'?'<div class="row"><input data-f="co" value="'+esc(d.co||'')+'" placeholder="Título do bloco de personagens"></div>':'');
 h+='<div class="row"><label>Capa <input type="color" data-f="c1" value="'+cc[0]+'"><input type="color" data-f="c2" value="'+(cc[1]||cc[0])+'"></label><label>Imagem <input type="file" id="img" accept="image/*" style="width:auto"></label></div>';
-h+='<textarea data-f="b" rows="16">'+esc(d.b||'')+'</textarea><p class="hint"># título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" bloco recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button>'+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
-else h+='<h1>'+esc(p.t)+'</h1><div class="box">'+md(p.b||'')+'</div>';
-if(kids.length)h+='<div class="subs">'+kids.map(x=>'<a href="#'+x.id+'">'+esc(x.t)+'</a>').join('')+'</div>';
+h+='<textarea data-f="b" rows="16">'+esc(d.b||'')+'</textarea><p class="hint"># título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" bloco recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button><button data-act="add" data-card="1">+ Novo card</button>'+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
+else h+='<h1>'+esc(p.t)+'</h1>'+(okimg(p.img)?'<img src="'+esc(p.img)+'" alt="" class="pic">':'')+'<div class="box">'+md(p.b||'')+'</div>';
+if(kids.length)h+=(p.ck||kids.some(x=>x.k||x.img))?'<div class="cards">'+kids.map(x=>'<a class="cd" href="#'+x.id+'"><div class="ci" style="'+esc(bgs(x))+'"></div><b>'+esc(x.t)+(KT[x.k]?'<i class="tag">'+KT[x.k]+'</i>':'')+'</b>'+(x.d?'<span>'+esc(x.d)+'</span>':'')+'</a>').join('')+'</div>':'<div class="subs">'+kids.map(x=>'<a href="#'+x.id+'">'+esc(x.t)+'</a>').join('')+'</div>';
 return h+'</div>'}
 function render(){if(cur==='conta'&&!me)cur='entrar';if(cur==='entrar'&&me)cur='conta';
 const sp=cur==='entrar'||cur==='conta';let p=pg(cur);if(!sp&&!p){cur='home';p=pg('home')}
@@ -104,19 +145,21 @@ else if(f==='allow')D.allow=e.target.value.split(',').map(x=>x.trim().toLowerCas
 else D[f]=e.target.value});
 async function up(file){const g=JSON.parse(localStorage.getItem('gh')||'{}');if(!g.repo||!g.token)throw 0;const bm=await createImageBitmap(file),k=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement('canvas');cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext('2d').drawImage(bm,0,0,cv.width,cv.height);
 const name='imgs/'+Date.now().toString(36)+'.jpg',r=await fetch('https://api.github.com/repos/'+g.repo+'/contents/'+name,{method:'PUT',headers:{Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json'},body:JSON.stringify({message:'imagem '+name,content:cv.toDataURL('image/jpeg',.85).split(',')[1],branch:g.branch||'main'})});if(!r.ok)throw r.status;return name}
-root.addEventListener('change',async e=>{if(e.target.id!=='img'||!e.target.files[0]||!D)return;say('Enviando imagem…');
-try{const n=await up(e.target.files[0]);D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
+root.addEventListener('change',async e=>{const ci=e.target.id==='cimg';if((e.target.id!=='img'&&!ci)||!e.target.files[0]||!D)return;say('Enviando imagem…');
+try{const n=await up(e.target.files[0]);if(ci)D.img=n;else D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
 const drop=async id=>{for(const k of S.pages.filter(x=>x.p===id))await drop(k.id);await deleteDoc(doc(db,'pages',id))};
 root.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;
 try{
 if(k==='menu'){side=!side;document.getElementById('sd').classList.toggle('open',side)}
+else if(k==='seed'){const R=[['sinopse','Synopsis','#1b5fd6,#6dd5fa','A campanha em poucas linhas.',''],['perguntas','The questions of the fucking world','#e8202a,#8a1c1c','O que o mundo ainda não respondeu.',''],['herois','Heróis','#11998e,#38ef7d','Você e seus colegas de merda.','hero'],['npcs','NPCs','#41295a,#e8202a','Quem mais está nessa história.','npc'],['lore','Infos extras','#232526,#6b6b6b','Lore, regras da casa e curiosidades.','lore'],['tales','Tales of Project H','#f12711,#f5af19','Registro das sessões.','']];
+await Promise.all(R.map((r,i)=>setDoc(doc(db,'pages',r[0]),{t:r[1],b:'',p:'home',o:i+1,vis:'public',c:r[2],d:r[3],ck:r[4]})));await load();render()}
 else if(k==='prof')location.hash=me?'conta':'entrar';
 else if(k==='edit'){edit=!edit;D=edit?structuredClone(pg(cur)):null;render()}
 else if(k==='tab'){tab=a.dataset.t;render()}
 else if(k==='login'){try{await signInWithEmailAndPassword(auth,mail(V('ln')),V('lp'));location.hash='conta'}catch(x){say('Usuário ou senha incorretos')}}
 else if(k==='logout'){await signOut(auth);edit=false;location.hash='home'}
 else if(k==='save'){const {id,...r}=D;await setDoc(doc(db,'pages',id),r);await load();say('Salvo')}
-else if(k==='add'){const id='p'+Date.now().toString(36);await setDoc(doc(db,'pages',id),{t:'Nova página',b:'',p:cur,o:Date.now(),vis:'public',c:'#1b5fd6,#6dd5fa'});await load();location.hash=id}
+else if(k==='add'){const id='p'+Date.now().toString(36);await setDoc(doc(db,'pages',id),{t:a.dataset.card?'Novo card':'Nova página',b:'',p:cur,o:Date.now(),vis:'public',c:'#1b5fd6,#6dd5fa',k:a.dataset.card?(pg(cur).ck||''):''});await load();location.hash=id}
 else if(k==='del'){if(!arm){arm=true;a.textContent='Confirmar exclusão?';return}arm=false;const par=pg(cur).p;await drop(cur);await load();location.hash=par||'home'}
 else if(k==='savenote'){prof={...prof,notes:V('nt')};await setDoc(doc(db,'players',me.username),prof);say('Salvo')}
 else if(k==='savedn'){prof={...prof,display:V('dn').trim()};await setDoc(doc(db,'players',me.username),prof);say('Salvo')}
@@ -125,5 +168,6 @@ else if(k==='mk'){const n=V('nu').trim().toLowerCase().replace(/[^a-z0-9._-]/g,'
 const sa=getAuth(initializeApp(firebaseConfig,'sec'+Date.now())),c=await createUserWithEmailAndPassword(sa,mail(n),p);await setDoc(doc(db,'accounts',c.user.uid),{username:n,role:'player'});await signOut(sa);await loadMe(auth.currentUser);say('Jogador criado')}
 else if(k==='savegh'){localStorage.setItem('gh',JSON.stringify({repo:V('gr').trim(),branch:V('gb').trim(),token:V('gt').trim()}));say('Salvo neste aparelho')}
 }catch(x){say('Não foi possível concluir a ação')}});
+root.addEventListener('mouseover',e=>{const a=e.target.closest('[data-d]'),t=document.getElementById('hdt');if(a&&t){t.textContent=a.dataset.t;document.getElementById('hdp').textContent=a.dataset.d}});
 go();
 </script></body></html>
