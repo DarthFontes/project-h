@@ -103,7 +103,7 @@ import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUser
 import {getFirestore,collection,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,query,where} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import {firebaseConfig} from './config.js';
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),root=document.getElementById('root');
-const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false,dr=false,allp=localStorage.getItem('allp')!=='0',vset=new Set();
+const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false,dr=false,allp=localStorage.getItem('allp')!=='0',vset=new Set(),rm=false,rg=false,inv='';
 const mail=u=>u.toLowerCase().replace(/[^a-z0-9._-]/g,'')+'@mesa.local',V=id=>document.getElementById(id).value,pg=id=>S.pages.find(x=>x.id===id),isMod=()=>me&&me.role==='mod';
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function grad(c){var a=(c||'#333,#555').split(',');return 'linear-gradient(135deg,'+a[0]+','+(a[1]||a[0])+')'}
@@ -122,20 +122,21 @@ function tree(pid){const k=S.pages.filter(x=>(x.p||'')===pid&&(allp||!x.p||vset.
 async function load(){const c=collection(db,'pages'),qs=[];
 if(isMod())qs.push(getDocs(c));else{qs.push(getDocs(query(c,where('vis','==','public'))));if(me){qs.push(getDocs(query(c,where('vis','==','players'))));qs.push(getDocs(query(c,where('allow','array-contains',me.uid))))}}
 const m={};(await Promise.all(qs)).forEach(s=>s.forEach(d=>m[d.id]={id:d.id,...d.data()}));S.pages=Object.values(m).sort((a,b)=>(a.o||0)-(b.o||0))}
-async function loadMe(u){me=null;prof={};if(!u)return;const a=await getDoc(doc(db,'accounts',u.uid));if(!a.exists()){await signOut(auth);return}
+async function loadMe(u){me=null;prof={};if(!u)return;const a=await getDoc(doc(db,'accounts',u.uid));if(!a.exists()){if(!rg)await signOut(auth);return}
 me={uid:u.uid,...a.data()};const p=await getDoc(doc(db,'players',me.username));prof=p.exists()?p.data():{};
-if(isMod())acc=(await getDocs(collection(db,'accounts'))).docs.map(d=>({id:d.id,...d.data()}))}
-onAuthStateChanged(auth,async u=>{try{await loadMe(u)}catch(e){me=null}try{await load()}catch(e){S.pages=[]}
+if(isMod()){acc=(await getDocs(collection(db,'accounts'))).docs.map(d=>({id:d.id,...d.data()}));try{const iv=await getDoc(doc(db,'config','invite'));inv=iv.exists()?iv.data().code||'':''}catch(e){}}}
+onAuthStateChanged(auth,async u=>{if(rg)return;try{await loadMe(u)}catch(e){me=null}try{await load()}catch(e){S.pages=[]}
 if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#ffd500'});await load()}render()});
 const say=t=>{msg=t;render()};
-function loginV(){return '<h1>Entrar</h1><div class="row"><input id="ln" placeholder="Nome de usuário" autocapitalize="none"><input id="lp" type="password" placeholder="Senha"></div><div class="row"><button data-act="login">Entrar</button></div>'}
+function loginV(){const f='<div class="row"><input id="ln" placeholder="Nome de usuário" autocapitalize="none"><input id="lp" type="password" placeholder="Senha'+(rm?' (mín. 6)':'')+'"></div>';
+return rm?'<h1>Criar conta</h1><p class="hint">Escolha um nome de usuário e uma senha.</p>'+f+'<div class="row"><button data-act="reg">Criar conta</button><button data-act="rmode">Já tenho conta</button></div>':'<h1>Entrar</h1>'+f+'<div class="row"><button data-act="login">Entrar</button><button data-act="rmode">Criar conta</button></div>'}
 function contaV(){const T=isMod()?[['jog','Jogadores'],['cfg','Perfil'],['git','Imagens']]:[['meu','Anotações'],['cfg','Perfil']];if(!T.some(t=>t[0]===tab))tab=T[0][0];
 let h='<h1>'+esc(prof.display||me.username)+'</h1><div class="row">'+T.map(t=>'<button data-act="tab" data-t="'+t[0]+'"'+(tab===t[0]?' disabled':'')+'>'+t[1]+'</button>').join('')+'<button data-act="logout">Sair</button></div>';
 if(tab==='meu')return h+'<div class="box"><textarea id="nt" rows="12">'+esc(prof.notes||'')+'</textarea><div class="row"><button data-act="savenote">Salvar anotações</button></div></div>';
 if(tab==='cfg')return h+'<div class="box"><h3>Nome de exibição</h3><div class="row"><input id="dn" value="'+esc(prof.display||'')+'" placeholder="'+esc(me.username)+'"><button data-act="savedn">Salvar</button></div><h3>Trocar senha</h3><div class="row"><input id="cp" type="password" placeholder="Senha atual"><input id="np2" type="password" placeholder="Nova senha (mín. 6)"><button data-act="chpw">Trocar</button></div></div>';
 if(tab==='git'){const g=JSON.parse(localStorage.getItem('gh')||'{}');return h+'<div class="box"><p class="hint">Para enviar imagens ao GitHub. Fica guardado só neste aparelho. Use um token com acesso apenas a este repositório (permissão Contents: leitura e escrita).</p><div class="row"><input id="gr" placeholder="usuario/repositorio" value="'+esc(g.repo||'')+'"><input id="gb" placeholder="branch (main)" value="'+esc(g.branch||'')+'"></div><div class="row"><input id="gt" type="password" placeholder="Token" value="'+esc(g.token||'')+'"><button data-act="savegh">Salvar</button></div></div>'}
 h+='<p class="hint">Esqueceu a senha de um jogador? Apague o usuário em Authentication no console do Firebase e crie de novo aqui. As anotações ficam, mas páginas restritas precisam ser liberadas outra vez.</p>';
-h+=acc.map(a=>'<div class="box"><b>'+esc(a.username)+'</b> <span class="hint">'+esc(a.role)+'</span></div>').join('');
+h+=acc.map(a=>'<div class="box"><b>'+esc(a.username)+'</b> <span class="hint">'+esc(a.role)+'</span>'+(a.role==='mod'?'':' <button data-act="accdel" data-id="'+a.id+'">Remover acesso</button>')+'</div>').join('');
 return h+'<div class="box"><h3>Novo jogador</h3><div class="row"><input id="nu" placeholder="Nome de usuário" autocapitalize="none"><input id="npw" type="password" placeholder="Senha (mín. 6)"><button data-act="mk">Criar</button></div></div>'}
 const okimg=u=>/^(imgs\/[\w.-]+|https:\/\/[^\s"'<>()]+)$/.test(u||''),KT={hero:'HERÓI',npc:'NPC',lore:'LORE'};
 const bgs=x=>x&&okimg(x.img)?'background-image:url('+x.img+')':'background:'+grad((x&&x.c)||'#1b5fd6,#6dd5fa');
@@ -193,6 +194,9 @@ return [mk('sinopse','Synopsis',{w:'7',s:'a'}),mk('perguntas','The questions of 
 {id:'grupo',t:h.co||'You and your asshole co-workers',l:'',u:'',d:'',w:'7',s:'c',ht:'g',c:h.c||'#e8202a,#ffd500',img:h.img||'',bt:[{t:T('herois').t||'Heróis',l:T('herois').t?'herois':'',u:'',d:T('herois').d||''},{t:T('npcs').t||'NPCs',l:T('npcs').t?'npcs':'',u:'',d:T('npcs').d||''}]},
 mk('tales','Tales of Project H',{w:'5',s:'d',ht:'g'}),{id:'jogo',t:'Jogo',l:'',u:'',d:'Em breve.',w:'12',s:'e',ht:'p',c:'#f12711,#f5af19',img:'',bt:[]}]}
 const pnU=x=>okurl(x.u)?x.u:(x.l&&pg(x.l)?'#'+x.l:''),pnA=u=>u&&u[0]!=='#'?' target="_blank" rel="noopener"':'';
+async function register(){const n=V('ln').trim().toLowerCase().replace(/[^a-z0-9._-]/g,''),p=V('lp');if(!n||p.length<6){say('Informe nome e senha (mín. 6 caracteres)');return}
+rg=true;let u=null;try{u=(await createUserWithEmailAndPassword(auth,mail(n),p)).user;await setDoc(doc(db,'accounts',u.uid),{username:n,role:'player'});await loadMe(u);await load();rm=false;location.hash='conta';render()}
+catch(e){if(u){try{await u.delete()}catch(x){await signOut(auth)}}say(e&&e.code==='auth/email-already-in-use'?'Esse nome já está em uso':'Não foi possível criar a conta. Tente outro nome.')}finally{rg=false}}
 function homeV(p){const pn=Array.isArray(p.pn)?p.pn:defPn();
 let h='<div class="hm"><div class="pw ttlw"><div class="ttl"><b>'+esc(p.t)+'</b></div></div>';
 pn.forEach(x=>{const u=pnU(x),bt=x.bt||[],cl='pw s'+(x.s||'a')+' z'+(x.ht||'m'),st='grid-column:span '+(+x.w||6),bg=esc(bgs(x)),dd=' data-t="'+esc(x.t||'')+'" data-d="'+esc(x.d||'')+'"';
@@ -249,6 +253,11 @@ if(k==='menu'){side=!side;document.getElementById('sd').classList.toggle('open',
 else if(k==='seed'){const R=[['sinopse','Synopsis','#1b5fd6,#6dd5fa','A campanha em poucas linhas.',''],['perguntas','The questions of the fucking world','#e8202a,#8a1c1c','O que o mundo ainda não respondeu.',''],['herois','Heróis','#11998e,#38ef7d','Você e seus colegas de merda.','hero'],['npcs','NPCs','#41295a,#e8202a','Quem mais está nessa história.','npc'],['lore','Infos extras','#232526,#6b6b6b','Lore, regras da casa e curiosidades.','lore'],['tales','Tales of Project H','#f12711,#f5af19','Registro das sessões.','']];
 await Promise.all(R.map((r,i)=>setDoc(doc(db,'pages',r[0]),{t:r[1],b:'',p:'home',o:i+1,vis:'public',c:r[2],d:r[3],ck:r[4]})));await load();render()}
 else if(k==='draw'){dr=!dr;render()}
+else if(k==='rmode'){rm=!rm;render()}
+else if(k==='reg')await register();
+else if(k==='invset'){const c=V('ic').trim();if(c.length<4){say('Use um código com pelo menos 4 caracteres');return}await setDoc(doc(db,'config','invite'),{code:c});inv=c;say('Código salvo')}
+else if(k==='invoff'){await deleteDoc(doc(db,'config','invite'));inv='';say('Cadastro desativado')}
+else if(k==='accdel'){await deleteDoc(doc(db,'accounts',a.dataset.id));acc=acc.filter(x=>x.id!==a.dataset.id);say('Acesso removido')}
 else if(k==='allp'){allp=!allp;localStorage.setItem('allp',allp?'1':'0');render()}
 else if(k==='hpadd'){D.pn.push({id:'n'+Date.now().toString(36),t:'Novo painel',l:'',u:'',d:'',w:'6',s:'a',ht:'m',c:'#1b5fd6,#6dd5fa',img:'',bt:[]});render()}
 else if(k==='hpdel'){D.pn.splice(+a.dataset.i,1);render()}
