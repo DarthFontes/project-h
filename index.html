@@ -89,6 +89,9 @@ aside a[draggable=true]{cursor:grab}aside a.dz-b{box-shadow:0 -4px 0 var(--r)}as
 .sa .pn{clip-path:polygon(9% 0,100% 0,100% 100%,0 100%)}.sb .pn{clip-path:polygon(0 0,97% 0,100% 100%,3% 100%)}.sc .pn{clip-path:polygon(0 3%,100% 0,97% 100%,0 100%)}.sd .pn{clip-path:polygon(4% 0,100% 0,100% 100%,0 96%)}.se .pn{clip-path:polygon(0 0,100% 6%,100% 100%,0 100%)}.sr .pn{clip-path:none}
 .zp .pn{min-height:96px}.zm .pn{min-height:150px}.zg .pn{min-height:230px}.pn.col{flex-direction:column}.pn.off{cursor:default}
 .tg{display:flex;gap:8px;align-items:center;margin:0 0 12px;font-weight:700;font-size:14px;cursor:pointer}
+
+.rte{min-height:90px;border:3px solid var(--ink);background:#fff;color:#141414;padding:8px 12px;margin:3px 0;outline:none;overflow-wrap:anywhere}.rte:focus{border-color:var(--r)}.rte:empty::before{content:"Escreva aqui...";opacity:.5}
+.tb{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));z-index:4;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--card);border:3px solid var(--ink);padding:6px;margin:10px 0}.tb button{padding:2px 9px}.tb select{width:auto;padding:2px 6px}.tb label{display:flex;gap:4px;align-items:center;font-size:13px}.tb input[type=color]{width:34px;height:26px;padding:0}
 </style></head><body><div id="root"><p style="padding:20px">Carregando…</p></div>
 <script>
 (function(){var r=document.getElementById('root');
@@ -103,7 +106,7 @@ import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUser
 import {getFirestore,collection,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,query,where} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import {firebaseConfig} from './config.js';
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),root=document.getElementById('root');
-const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false,dr=false,allp=localStorage.getItem('allp')!=='0',vset=new Set(),rm=false,rg=false,inv='';
+const S={pages:[]};let me=null,cur='home',edit=false,D=null,tab='jog',side=false,msg='',acc=[],prof={},arm=false,dr=false,ae=null,sv=null,allp=localStorage.getItem('allp')!=='0',vset=new Set(),rm=false,rg=false,inv='';
 const mail=u=>u.toLowerCase().replace(/[^a-z0-9._-]/g,'')+'@mesa.local',V=id=>document.getElementById(id).value,pg=id=>S.pages.find(x=>x.id===id),isMod=()=>me&&me.role==='mod';
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function grad(c){var a=(c||'#333,#555').split(',');return 'linear-gradient(135deg,'+a[0]+','+(a[1]||a[0])+')'}
@@ -172,23 +175,50 @@ return '<div class="dw"><h3>Personalizar página</h3><label>Tema</label>'+sel('p
 +'<label class="row"><input type="checkbox" data-th="inh"'+(o.inh?' checked':'')+'> Aplicar também às subpáginas (na página inicial, vale para o site todo)</label>'
 +'<div class="row"><button data-act="threset">Redefinir esta página</button></div><p class="hint">Cor de texto muito parecida com o fundo dos cartões pode ficar ilegível. Salve a página para valer para todos.</p></div>'}
 const BN={md:'Texto',h:'Título',img:'Imagem',call:'Destaque',tog:'Recolhível',cols:'Colunas',div:'Divisor'};
-const nb=t=>({md:{t,x:''},h:{t,x:'',l:'1'},img:{t,x:'',y:''},call:{t,x:'',v:'0'},tog:{t,x:'',y:''},cols:{t,c:['','']},div:{t}})[t];
-const cd=p=>{const d=structuredClone(p);if(p.id==='home'&&!Array.isArray(d.pn))d.pn=structuredClone(defPn());if(!Array.isArray(d.bl))d.bl=d.b?[{t:'md',x:d.b}]:[];return d};
+const nb=t=>({md:{t,x:'',xH:''},h:{t,x:'',l:'1'},img:{t,x:'',y:''},call:{t,x:'',v:'0',xH:''},tog:{t,x:'',y:'',yH:''},cols:{t,c:['',''],cH:['','']},div:{t}})[t];
+const cd=p=>{const d=structuredClone(p);if(p.id==='home'&&!Array.isArray(d.pn))d.pn=structuredClone(defPn());if(!Array.isArray(d.bl))d.bl=d.b?[{t:'md',x:d.b}]:[];d.bl.forEach(b=>{if(b.t==='md'||b.t==='call'){if(b.xH==null)b.xH=md(b.x||'')}else if(b.t==='tog'){if(b.yH==null)b.yH=md(b.y||'')}else if(b.t==='cols'){b.c=b.c||['',''];if(!Array.isArray(b.cH))b.cH=b.c.map(x=>md(x||''))}});return d};
 function blV(p){return p.bl.map(b=>{const t=b.t;
-if(t==='md')return md(b.x||'');if(t==='h'){const n=b.l=='2'?3:2;return '<h'+n+'>'+inl(b.x||'')+'</h'+n+'>'}
+if(t==='md')return rh(b.xH,b.x);if(t==='h'){const n=b.l=='2'?3:2;return '<h'+n+'>'+inl(b.x||'')+'</h'+n+'>'}
 if(t==='img')return okimg(b.x)?'<figure class="fg"><img src="'+esc(b.x)+'" alt="">'+(b.y?'<figcaption>'+inl(b.y)+'</figcaption>':'')+'</figure>':'';
-if(t==='call')return '<div class="cal cv'+(b.v||0)+'">'+md(b.x||'')+'</div>';
-if(t==='tog')return '<details><summary>'+inl(b.x||'')+'</summary><div>'+md(b.y||'')+'</div></details>';
-if(t==='cols')return '<div class="cl">'+(b.c||[]).map(c=>'<div>'+md(c)+'</div>').join('')+'</div>';
+if(t==='call')return '<div class="cal cv'+(b.v||0)+'">'+rh(b.xH,b.x)+'</div>';
+if(t==='tog')return '<details><summary>'+inl(b.x||'')+'</summary><div>'+rh(b.yH,b.y)+'</div></details>';
+if(t==='cols')return '<div class="cl">'+(b.cH||b.c||[]).map(c=>'<div>'+(b.cH?rh(c,''):md(c))+'</div>').join('')+'</div>';
 return t==='div'?'<hr>':''}).join('')}
 const bt=(i,f,v,r)=>'<textarea data-bi="'+i+'" data-bf="'+f+'" rows="'+r+'">'+esc(v||'')+'</textarea>',bx=(i,f,v,ph)=>'<input data-bi="'+i+'" data-bf="'+f+'" value="'+esc(v||'')+'" placeholder="'+ph+'">',bs=(i,f,v,o)=>'<select data-bi="'+i+'" data-bf="'+f+'">'+o.map(x=>'<option value="'+x[0]+'"'+(String(v)===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select>';
 function blEd(){return D.bl.map((b,i)=>{let f='';
-if(b.t==='md')f=bt(i,'x',b.x,5);else if(b.t==='h')f=bx(i,'x',b.x,'Título')+bs(i,'l',b.l||'1',[['1','Grande'],['2','Médio']]);
+if(b.t==='md')f=rte(i,'x',b.xH);else if(b.t==='h')f=bx(i,'x',b.x,'Título')+bs(i,'l',b.l||'1',[['1','Grande'],['2','Médio']]);
 else if(b.t==='img')f=bx(i,'x',b.x,'imgs/arquivo.jpg ou https://...')+'<input type="file" accept="image/*" data-up="'+i+'" style="width:auto">'+bx(i,'y',b.y,'Legenda (opcional)');
-else if(b.t==='call')f=bs(i,'v',b.v||'0',[['0','Azul'],['1','Amarelo'],['2','Vermelho'],['3','Neutro']])+bt(i,'x',b.x,3);
-else if(b.t==='tog')f=bx(i,'x',b.x,'Título do bloco')+bt(i,'y',b.y,4);
-else if(b.t==='cols')f='<div class="cl">'+(b.c||[]).map((c,j)=>'<textarea data-bi="'+i+'" data-ci="'+j+'" rows="5">'+esc(c)+'</textarea>').join('')+'</div><button data-act="bcol" data-i="'+i+'" data-d="1">+ coluna</button> <button data-act="bcol" data-i="'+i+'" data-d="-1">- coluna</button>';
+else if(b.t==='call')f=bs(i,'v',b.v||'0',[['0','Azul'],['1','Amarelo'],['2','Vermelho'],['3','Neutro']])+rte(i,'x',b.xH);
+else if(b.t==='tog')f=bx(i,'x',b.x,'Título do bloco')+rte(i,'y',b.yH);
+else if(b.t==='cols')f='<div class="cl">'+(b.cH||[]).map((c,j)=>rte(i,'c',c,j)).join('')+'</div><button data-act="bcol" data-i="'+i+'" data-d="1">+ coluna</button> <button data-act="bcol" data-i="'+i+'" data-d="-1">- coluna</button>';
 return '<div class="bk"><div class="bkh"><b>'+BN[b.t]+'</b><span><button data-act="bmv" data-i="'+i+'" data-d="-1">▲</button><button data-act="bmv" data-i="'+i+'" data-d="1">▼</button><button data-act="bdel" data-i="'+i+'">×</button></span></div>'+f+'</div>'}).join('')+'<div class="row">'+Object.keys(BN).map(t=>'<button data-act="badd" data-t="'+t+'">+ '+BN[t]+'</button>').join('')+'</div>'}
+const FF={'Comic Neue':FH.comic,'Bangers':FH.bangers,'Inter':FH.inter,'Lora':FH.lora,'Space Mono':FH.mono,'Special Elite':FH.typew,'Orbitron':FH.orb};
+const OKT=new Set(['P','BR','B','STRONG','I','EM','U','S','STRIKE','SPAN','H2','H3','UL','OL','LI','A','DIV','DETAILS','SUMMARY']);
+function cleanCss(st){const o=[];st.split(';').forEach(d=>{const i=d.indexOf(':');if(i<0)return;const k=d.slice(0,i).trim().toLowerCase(),v=d.slice(i+1).trim();
+if((k==='color'||k==='background-color')&&/^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\))$/i.test(v))o.push(k+':'+v);
+else if(k==='font-size'&&/^\d{1,3}(\.\d+)?(px|pt|em|rem)$/.test(v))o.push(k+':'+v);
+else if(k==='font-family'){const n=Object.keys(FF).find(f=>v.replace(/["']/g,'').toLowerCase().startsWith(f.toLowerCase()));if(n)o.push('font-family:'+FF[n])}
+else if(k==='font-weight'&&/^(bold|[1-9]00)$/.test(v))o.push(k+':'+v);
+else if(k==='font-style'&&v==='italic')o.push('font-style:italic');
+else if(k==='text-decoration'&&/^(underline|line-through)/.test(v))o.push('text-decoration:'+v.split(' ')[0]);
+else if(k==='text-align'&&/^(left|center|right|justify)$/.test(v))o.push(k+':'+v)});return o.join(';')}
+function clean(h){const d=new DOMParser().parseFromString('<body>'+(h||'')+'</body>','text/html').body;
+const w=n=>[...n.childNodes].forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}w(c);
+if(!OKT.has(c.tagName)){c.replaceWith(...c.childNodes);return}
+const st=c.getAttribute('style'),hr=c.getAttribute('href');[...c.attributes].forEach(a=>c.removeAttribute(a.name));
+if(st){const x=cleanCss(st);if(x)c.setAttribute('style',x)}
+if(c.tagName==='A'&&hr&&(okurl(hr)||/^#[\w-]+$/.test(hr))){c.setAttribute('href',hr);if(hr[0]!=='#'){c.setAttribute('target','_blank');c.setAttribute('rel','noopener')}}});
+w(d);return d.innerHTML}
+const rh=(h,m)=>(h!=null?clean(h):md(m||'')).replace(/\[\[([^\]<>]+?)\]\]/g,(x,t)=>{const p=S.pages.find(q=>esc(q.t).toLowerCase()===t.toLowerCase());return p?'<a href="#'+p.id+'">'+t+'</a>':x});
+const rte=(i,f,h,j)=>'<div class="rte" contenteditable="true" data-rb="'+i+'" data-rf="'+f+'"'+(j!==undefined?' data-rj="'+j+'"':'')+'>'+clean(h||'')+'</div>';
+function tbar(){return '<div class="tb"><button data-cmd="bold"><b>N</b></button><button data-cmd="italic"><i>I</i></button><button data-cmd="underline"><u>S</u></button><button data-cmd="strikeThrough"><s>T</s></button><select data-tsel="fontName"><option value="">Fonte</option>'+Object.keys(FF).map(f=>'<option>'+f+'</option>').join('')+'</select><select data-tsel="size"><option value="">Tamanho</option>'+[12,14,16,18,20,24,28,32,40,48,64].map(n=>'<option>'+n+'</option>').join('')+'</select><label>Cor <input type="color" data-tcol="foreColor" value="#000000"></label><label>Marca-texto <input type="color" data-tcol="hiliteColor" value="#ffe066"></label><button data-cmd="formatBlock" data-v="h2">Título</button><button data-cmd="formatBlock" data-v="p">Parágrafo</button><button data-cmd="insertUnorderedList">Lista</button><button data-cmd="justifyLeft">Esq.</button><button data-cmd="justifyCenter">Centro</button><button data-cmd="justifyRight">Dir.</button><button data-cmd="createLink">Link</button><button data-cmd="removeFormat">Limpar</button></div>'}
+function syncRte(el){if(!D)return;const b=D.bl[+el.dataset.rb];if(!b)return;const h=clean(el.innerHTML);if(el.dataset.rj!==undefined){b.cH=b.cH||[];b.cH[+el.dataset.rj]=h}else b[el.dataset.rf+'H']=h}
+function run(cmd,v){if(!ae||!sv)return;const s=getSelection();ae.focus();s.removeAllRanges();s.addRange(sv);const X=(c,a)=>document.execCommand(c,false,a);X('styleWithCSS',true);
+if(cmd==='size'){X('styleWithCSS',false);X('fontSize','7');ae.querySelectorAll('font[size="7"]').forEach(f=>{const x=document.createElement('span');x.style.fontSize=v+'px';x.append(...f.childNodes);f.replaceWith(x)});X('styleWithCSS',true)}
+else if(cmd==='createLink'){const u=prompt('Endereço do link (https://...)');if(u)X('createLink',u)}
+else if(cmd==='formatBlock')X('formatBlock',v==='h2'?'<h2>':'<p>');
+else X(cmd,v);
+syncRte(ae)}
 const sibs=par=>S.pages.filter(x=>(x.p||'')===par).sort((a,b)=>(a.o||0)-(b.o||0)),isDesc=(t,id)=>{for(let n=pg(t);n;n=pg(n.p))if(n.id===id)return true;return false};
 async function place(id,par,idx){const l=sibs(par).filter(x=>x.id!==id);l.splice(idx,0,pg(id));
 await Promise.all(l.map((x,i)=>(x.id===id||(x.o||0)!==(i+1)*10)?setDoc(doc(db,'pages',x.id),{p:par,o:(i+1)*10},{merge:true}):null).filter(Boolean))}
@@ -226,11 +256,11 @@ if(d){const al=(d.allow||[]).map(u=>(acc.find(a=>a.id===u)||{}).username||u).joi
 h+='<input class="ti" data-f="t" value="'+esc(d.t)+'"><div class="row"><label>Quem vê <select data-f="vis"><option value="public"'+(d.vis==='public'?' selected':'')+'>Todos</option><option value="players"'+(d.vis==='players'?' selected':'')+'>Jogadores logados</option><option value="restrict"'+(d.vis==='restrict'?' selected':'')+'>Só os listados</option></select></label><input data-f="allow" value="'+esc(al)+'" placeholder="usuários liberados, separados por vírgula"></div>';
 h+='<div class="row"><input data-f="d" value="'+esc(d.d||'')+'" placeholder="Descrição curta (aparece ao passar o mouse)"><input data-f="img" value="'+esc(d.img||'')+'" placeholder="Imagem do card/painel: imgs/arquivo.jpg ou https://..."></div><div class="row"><label>Cards filhos <select data-f="ck">'+[['','Normal'],['hero','Heróis'],['npc','NPCs'],['lore','Lore']].map(o=>'<option value="'+o[0]+'"'+((d.ck||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Enviar imagem do card <input type="file" id="cimg" accept="image/*" style="width:auto"></label></div>'+(p.id==='home'?'<div class="row"><input data-f="co" value="'+esc(d.co||'')+'" placeholder="Título do bloco de personagens"></div>':'');
 h+='<div class="row"><label>Capa <input type="color" data-f="c1" value="'+cc[0]+'"><input type="color" data-f="c2" value="'+(cc[1]||cc[0])+'"></label><label>Imagem <input type="file" id="img" accept="image/*" style="width:auto"></label></div>';
-h+=(p.id==='home'?pnEd():blEd())+'<p class="hint">Nos blocos de texto: # título · ## subtítulo · - lista · **negrito** · [[Outra página]] · "+ Título" ... "+/" recolhível</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button><button data-act="add" data-card="1">+ Novo card</button>'+(p.id!=='home'?'<button data-act="pmv" data-d="-1">Subir na ordem</button><button data-act="pmv" data-d="1">Descer na ordem</button>':'')+''+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
+h+=(p.id==='home'?pnEd():tbar()+blEd())+'<p class="hint">Selecione o texto e use a barra acima para negrito, cor, fonte e tamanho. Para linkar outra página escreva [[Nome da página]].</p><div class="row"><button data-act="save">Salvar</button><button data-act="add">+ Subpágina</button><button data-act="add" data-card="1">+ Novo card</button>'+(p.id!=='home'?'<button data-act="pmv" data-d="-1">Subir na ordem</button><button data-act="pmv" data-d="1">Descer na ordem</button>':'')+''+(p.id!=='home'?'<button data-act="del">Excluir página</button>':'')+'</div>'}
 else h+='<h1>'+esc(p.t)+'</h1>'+(okimg(p.img)?'<img src="'+esc(p.img)+'" alt="" class="pic">':'')+'<div class="box">'+(Array.isArray(p.bl)?blV(p):md(p.b||''))+'</div>';
 if(kids.length)h+=(p.ck||kids.some(x=>x.k||x.img))?'<div class="cards">'+kids.map(x=>'<a class="cd" href="#'+x.id+'"><div class="ci" style="'+esc(bgs(x))+'"></div><b>'+esc(x.t)+(KT[x.k]?'<i class="tag">'+KT[x.k]+'</i>':'')+'</b>'+(x.d?'<span>'+esc(x.d)+'</span>':'')+'</a>').join('')+'</div>':'<div class="subs">'+kids.map(x=>'<a href="#'+x.id+'">'+esc(x.t)+'</a>').join('')+'</div>';
 return h+'</div>'}
-function render(){if(cur==='conta'&&!me)cur='entrar';if(cur==='entrar'&&me)cur='conta';
+function render(){ae=null;sv=null;if(cur==='conta'&&!me)cur='entrar';if(cur==='entrar'&&me)cur='conta';
 const sp=cur==='entrar'||cur==='conta';let p=pg(cur);if(!sp&&!p){cur='home';p=pg('home')}applyTheme(themeFor(sp?pg('home'):p));vset=new Set();if(!allp){for(let n=pg(cur);n;n=pg(n.p))vset.add(n.id);S.pages.filter(x=>x.p===cur).forEach(x=>vset.add(x.id))}
 let h='<div class="top"><button id="mb" data-act="menu">Menu</button><span class="crumbs bn">'+(sp?(cur==='conta'?'Conta':'Entrar'):esc(p?p.t:''))+'</span><span class="sp"></span><span class="hint">'+esc(msg)+'</span>';
 if(isMod()&&!sp&&p)h+='<button data-act="edit">'+(edit?'Ver como jogador':'Editar')+'</button>'+(edit?'<button data-act="draw">Personalizar</button>':'');
@@ -239,7 +269,8 @@ h+=sp?'<div class="cover" style="background:'+grad('#e8202a,#e9b44c')+'"></div><
 root.innerHTML=h+'</main></div>'+(dr&&edit&&D&&!sp?drawer():'');document.title=(pg('home')||{t:'Mesa'}).t}
 function go(){cur=location.hash.slice(1)||'home';side=false;D=edit&&pg(cur)?cd(pg(cur)):null;render();scrollTo(0,0)}
 addEventListener('hashchange',go);
-root.addEventListener('input',e=>{const pi=e.target.dataset.pi;if(pi!==undefined&&D){const x=D.pn[+pi],f=e.target.dataset.pf,j=e.target.dataset.bj;
+root.addEventListener('input',e=>{const rt=e.target.closest&&e.target.closest('.rte');if(rt){syncRte(rt);return}
+const pi=e.target.dataset.pi;if(pi!==undefined&&D){const x=D.pn[+pi],f=e.target.dataset.pf,j=e.target.dataset.bj;
 if(j!==undefined)x.bt[+j][f]=e.target.value;else if(f==='c1'||f==='c2'){const a=(x.c||'#1b5fd6,#6dd5fa').split(',');a[f==='c1'?0:1]=e.target.value;x.c=a.join(',')}else x[f]=e.target.value;return}
 const bi=e.target.dataset.bi;if(bi!==undefined&&D){const b=D.bl[+bi],c=e.target.dataset.ci;if(c!==undefined)b.c[+c]=e.target.value;else b[e.target.dataset.bf]=e.target.value;return}
 const k=e.target.dataset.th;if(k&&D){D.th=D.th||{};const v=e.target.type==='checkbox'?e.target.checked:e.target.value;if(v==='')delete D.th[k];else D.th[k]=v;applyTheme(themeFor(pg(cur)));return}
@@ -272,7 +303,7 @@ else if(k==='hbdel'){D.pn[+a.dataset.i].bt.splice(+a.dataset.j,1);render()}
 else if(k==='badd'){D.bl.push(nb(a.dataset.t));render()}
 else if(k==='bdel'){D.bl.splice(+a.dataset.i,1);render()}
 else if(k==='bmv'){const i=+a.dataset.i,j=i+ +a.dataset.d;if(j>=0&&j<D.bl.length){[D.bl[i],D.bl[j]]=[D.bl[j],D.bl[i]];render()}}
-else if(k==='bcol'){const b=D.bl[+a.dataset.i],d=+a.dataset.d;if(d>0&&b.c.length<4)b.c.push('');if(d<0&&b.c.length>1)b.c.pop();render()}
+else if(k==='bcol'){const b=D.bl[+a.dataset.i],d=+a.dataset.d;const n=b.cH.length;if(d>0&&n<4){b.cH.push('');b.c.push('')}if(d<0&&n>1){b.cH.pop();b.c.pop()}render()}
 else if(k==='pmv'){const p=pg(cur),par=p.p||'',j=sibs(par).findIndex(x=>x.id===p.id)+ +a.dataset.d;if(j<0||j>=sibs(par).length)return;await place(p.id,par,j);await load();render()}
 else if(k==='thclr'){if(D.th)delete D.th[a.dataset.k];render()}
 else if(k==='threset'){D.th={};render()}
@@ -291,6 +322,12 @@ else if(k==='mk'){const n=V('nu').trim().toLowerCase().replace(/[^a-z0-9._-]/g,'
 const sa=getAuth(initializeApp(firebaseConfig,'sec'+Date.now())),c=await createUserWithEmailAndPassword(sa,mail(n),p);await setDoc(doc(db,'accounts',c.user.uid),{username:n,role:'player'});await signOut(sa);await loadMe(auth.currentUser);say('Jogador criado')}
 else if(k==='savegh'){localStorage.setItem('gh',JSON.stringify({repo:V('gr').trim(),branch:V('gb').trim(),token:V('gt').trim()}));say('Salvo neste aparelho')}
 }catch(x){say('Não foi possível concluir a ação')}});
+document.addEventListener('selectionchange',()=>{const s=getSelection();if(!s.rangeCount)return;const n=s.anchorNode,el=n&&(n.nodeType===1?n:n.parentElement),r=el&&el.closest&&el.closest('.rte');if(r){ae=r;sv=s.getRangeAt(0).cloneRange()}});
+root.addEventListener('paste',e=>{const r=e.target.closest&&e.target.closest('.rte');if(!r)return;e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'))});
+root.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('.tb button'))e.preventDefault()});
+root.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-cmd]');if(b)run(b.dataset.cmd,b.dataset.v)});
+root.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.tsel;if(k&&e.target.value){run(k,e.target.value);e.target.value=''}});
+root.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.tcol;if(k)run(k,e.target.value)});
 let dg=null;const zone=(e,a)=>{const r=a.getBoundingClientRect(),y=(e.clientY-r.top)/r.height;return a.dataset.id==='home'?'i':y<.28?'b':y>.72?'a':'i'},clr=()=>root.querySelectorAll('.dz').forEach(x=>x.classList.remove('dz','dz-b','dz-a','dz-i'));
 root.addEventListener('dragstart',e=>{const a=e.target.closest&&e.target.closest('a[data-id]');if(a&&isMod()){dg=a.dataset.id;e.dataTransfer.setData('text/plain',dg);e.dataTransfer.effectAllowed='move'}});
 root.addEventListener('dragover',e=>{const a=e.target.closest&&e.target.closest('a[data-id]');if(!a||!dg)return;e.preventDefault();clr();a.classList.add('dz','dz-'+zone(e,a))});
