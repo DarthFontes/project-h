@@ -132,7 +132,9 @@ async function loadMe(u){me=null;prof={};if(!u)return;const a=await getDoc(doc(d
 me={uid:u.uid,...a.data()};const p=await getDoc(doc(db,'players',me.username));prof=p.exists()?p.data():{};
 if(isMod()){acc=(await getDocs(collection(db,'accounts'))).docs.map(d=>({id:d.id,...d.data()}));try{const iv=await getDoc(doc(db,'config','invite'));inv=iv.exists()?iv.data().code||'':''}catch(e){}}}
 onAuthStateChanged(auth,async u=>{if(rg)return;try{await loadMe(u)}catch(e){me=null}try{await load()}catch(e){S.pages=[]}
-if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#e9b44c'});await load()}render()});
+if(isMod()&&!S.pages.length){await setDoc(doc(db,'pages','home'),{t:'Project H.E.R.O.',b:'Bem-vindos à mesa!',p:'',o:0,vis:'public',c:'#e8202a,#e9b44c'});await load()}
+if(isMod()&&!pg('jogo')&&localStorage.getItem('jogoMade')!=='1'){try{await setDoc(doc(db,'pages','jogo'),{t:'Jogo',b:'',p:'home',o:900,vis:'restrict',allow:[],c:'#232526,#6b6b6b',d:'Mesa de jogo (somente moderador).',k:'',ck:'',bl:[{t:'call',x:'',xH:'<p>Página do jogo. Por enquanto só o moderador acessa.</p>',v:'1'}]});localStorage.setItem('jogoMade','1');await load()}catch(e){}}
+render()});
 const say=t=>{msg=t;render()};
 function loginV(){const f='<div class="row"><input id="ln" placeholder="Nome de usuário" autocapitalize="none"><input id="lp" type="password" placeholder="Senha'+(rm?' (mín. 6)':'')+'"></div>';
 return rm?'<h1>Criar conta</h1><p class="hint">Escolha um nome de usuário e uma senha.</p>'+f+'<div class="row"><button data-act="reg">Criar conta</button><button data-act="rmode">Já tenho conta</button></div>':'<h1>Entrar</h1>'+f+'<div class="row"><button data-act="login">Entrar</button><button data-act="rmode">Criar conta</button></div>'}
@@ -230,7 +232,7 @@ const PNC={sinopse:'#e8202a,#e9b44c',perguntas:'#ff2bd6,#3a0ca3',tales:'#6b4f2a,
 function defPn(){const T=id=>pg(id)||{},h=pg('home')||{},mk=(id,def,o)=>({id,t:T(id).t||def,l:T(id).t?id:'',u:'',d:T(id).d||'',c:PNC[id]||T(id).c||'#1b5fd6,#6dd5fa',img:T(id).img||'',bt:[],ht:'m',...o});
 return [mk('sinopse','Synopsis',{w:'7',s:'a'}),mk('perguntas','The questions of the fucking world',{w:'12',s:'b',ht:'p'}),
 {id:'grupo',t:h.co||'You and your asshole co-workers',l:'',u:'',d:'',w:'7',s:'c',ht:'g',c:'#06283d,#1b8aa8',img:h.img||'',bt:[{t:T('herois').t||'Heróis',l:T('herois').t?'herois':'',u:'',d:T('herois').d||''},{t:T('npcs').t||'NPCs',l:T('npcs').t?'npcs':'',u:'',d:T('npcs').d||''}]},
-mk('tales','Tales of Project H',{w:'5',s:'d',ht:'g'}),{id:'jogo',t:'Jogo',l:'',u:'',d:'Em breve.',w:'12',s:'e',ht:'p',c:'#f12711,#f5af19',img:'',bt:[]}]}
+mk('tales','Tales of Project H',{w:'5',s:'d',ht:'g'}),{id:'jogo',t:'Jogo',l:'jogo',u:'',d:'Mesa de jogo.',w:'12',s:'e',ht:'p',c:'#f12711,#f5af19',img:'',bt:[]}]}
 const pnU=x=>okurl(x.u)?x.u:(x.l&&pg(x.l)?'#'+x.l:''),pnA=u=>u&&u[0]!=='#'?' target="_blank" rel="noopener"':'';
 async function register(){const n=V('ln').trim().toLowerCase().replace(/[^a-z0-9._-]/g,''),p=V('lp');if(!n||p.length<6){say('Informe nome e senha (mín. 6 caracteres)');return}
 rg=true;let u=null;try{u=(await createUserWithEmailAndPassword(auth,mail(n),p)).user;await setDoc(doc(db,'accounts',u.uid),{username:n,role:'player'});await loadMe(u);await load();rm=false;location.hash='conta';render()}
