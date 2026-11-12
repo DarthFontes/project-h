@@ -287,10 +287,17 @@ const f=e.target.dataset.f;if(!f||!D)return;
 if(f==='c1'||f==='c2'){const a=(D.c||'#333,#555').split(',');a[f==='c1'?0:1]=e.target.value;D.c=a.join(',');root.querySelector('.cover').style.background=grad(D.c)}
 else if(f==='allow')D.allow=e.target.value.split(',').map(x=>x.trim().toLowerCase()).map(n=>(acc.find(a=>a.username===n)||{}).id).filter(Boolean);
 else D[f]=e.target.value});
-async function up(file){const g=JSON.parse(localStorage.getItem('gh')||'{}');if(!g.repo||!g.token)throw 0;const bm=await createImageBitmap(file),k=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement('canvas');cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext('2d').drawImage(bm,0,0,cv.width,cv.height);
-const name='imgs/'+Date.now().toString(36)+'.jpg',r=await fetch('https://api.github.com/repos/'+g.repo+'/contents/'+name,{method:'PUT',headers:{Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json'},body:JSON.stringify({message:'imagem '+name,content:cv.toDataURL('image/jpeg',.85).split(',')[1],branch:g.branch||'main'})});if(!r.ok)throw r.status;return name}
+const b64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(b)});
+async function up(file){const g=JSON.parse(localStorage.getItem('gh')||'{}');if(!g.repo||!g.token)throw 0;
+const EX={'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'},ext=EX[file.type];if(!ext)throw 1;
+let blob=file;
+if(ext!=='gif'){const bm=await createImageBitmap(file),m=Math.max(bm.width,bm.height);
+if(m>2000||file.size>2*1024*1024){const k=Math.min(1,2000/m),cv=document.createElement('canvas');cv.width=Math.round(bm.width*k);cv.height=Math.round(bm.height*k);cv.getContext('2d').drawImage(bm,0,0,cv.width,cv.height);
+blob=(await new Promise(r=>cv.toBlob(r,file.type,.9)))||file}}
+if(blob.size>20*1024*1024)throw 2;
+const name='imgs/'+Date.now().toString(36)+'.'+ext,r=await fetch('https://api.github.com/repos/'+g.repo+'/contents/'+name,{method:'PUT',headers:{Authorization:'Bearer '+g.token,Accept:'application/vnd.github+json'},body:JSON.stringify({message:'imagem '+name,content:await b64(blob),branch:g.branch||'main'})});if(!r.ok)throw r.status;return name}
 root.addEventListener('change',async e=>{const pu=e.target.dataset.pup,ub=e.target.dataset.up,ci=e.target.id==='cimg',bi=e.target.id==='bimg';if((e.target.id!=='img'&&!ci&&!bi&&ub===undefined&&pu===undefined)||!e.target.files[0]||!D)return;say('Enviando imagem…');
-try{const n=await up(e.target.files[0]);if(pu!==undefined)D.pn[+pu].img=n;else if(ub!==undefined)D.bl[+ub].x=n;else if(bi){D.th=D.th||{};D.th.bi=n}else if(ci)D.img=n;else D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say('Falha no envio. Configure o GitHub em Conta > Imagens.')}});
+try{const n=await up(e.target.files[0]);if(pu!==undefined)D.pn[+pu].img=n;else if(ub!==undefined)D.bl[+ub].x=n;else if(bi){D.th=D.th||{};D.th.bi=n}else if(ci)D.img=n;else D.b=(D.b?D.b+'\n':'')+'!['+'](' +n+')';say('Imagem enviada. Salve a página; no site ela aparece em cerca de 1 minuto.')}catch(x){say(x===1?'Formato não suportado. Use PNG, JPG, WEBP ou GIF.':x===2?'Imagem grande demais (máximo 20 MB).':'Falha no envio. Configure o GitHub em Conta > Imagens.')}});
 const drop=async id=>{for(const k of S.pages.filter(x=>x.p===id))await drop(k.id);await deleteDoc(doc(db,'pages',id))};
 root.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;
 try{
